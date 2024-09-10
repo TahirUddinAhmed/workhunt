@@ -14,10 +14,11 @@ function basePath($path = '') {
  * Load a View 
  * 
  * @param string $name
+ * @param array $data
  * @return void
  * 
  */
-function loadView($name) {
+function loadView($name, $data = []) {
     $path = basePath('views/' . $name);
     $ext = '.view.php';
     $fullPath = $path . $ext;
@@ -25,6 +26,8 @@ function loadView($name) {
     if(!file_exists($fullPath)) {
         die('View File not found ' . $fullPath);
     } else {
+        extract($data);
+        // $data;
         require $fullPath;
     }
     

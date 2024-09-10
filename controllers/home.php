@@ -5,6 +5,8 @@ $db = new Database($config);
 
 $listings = $db->query('SELECT * FROM listings')->fetchAll();
 
-inspect($listings);
+// inspect($listings);
 
-loadView('home');
+loadView('home', [
+    'listings' => $listings
+]);
