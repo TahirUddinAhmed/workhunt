@@ -72,3 +72,13 @@ function loadPartial($name) {
     die(var_dump($value));
     echo '</pre>';
   }
+
+/**
+ * Formate Salary 
+ * 
+ * @param string $salary
+ * @return string $formatted salary 
+ */
+function formateSalary($salary) {
+    return '₹' . number_format(floatval($salary));
+}

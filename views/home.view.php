@@ -2,7 +2,6 @@
 <?php loadPartial('navbar'); ?>
 <?php loadPartial('showcase-search'); ?>
 <?php loadPartial('top-banner'); ?>
-
     <!-- Job Listings -->
     <section>
       <div class="container mx-auto p-4 mt-4">
@@ -12,21 +11,21 @@
             <!-- Job Listing 1: Software Engineer -->
             <div class="rounded-lg shadow-md bg-white">
               <div class="p-4">
-                <h2 class="text-xl font-semibold"><?= $jobs['title'] ?></h2>
+                <h2 class="text-xl font-semibold"><?= $jobs->title ?></h2>
                 <p class="text-gray-700 text-lg mt-2">
-                <?= $jobs['desc'] ?>
+                <?= $jobs->desc ?>
                 </p>
                 <ul class="my-4 bg-gray-100 p-4 rounded">
-                  <li class="mb-2"><strong>Salary:</strong> ₹<?= $jobs['salary'] ?></li>
+                  <li class="mb-2"><strong>Salary:</strong> <?= formateSalary($jobs->salary) ?></li>
                   <li class="mb-2">
-                    <strong>Location:</strong> <?= $jobs['city'] ?>
+                    <strong>Location:</strong> <?= $jobs->city ?>
                     <!-- <span
                       class="text-xs bg-blue-500 text-white rounded-full px-2 py-1 ml-2"
                       >Local</span -->
                     
                   </li>
                   <li class="mb-2">
-                    <strong>Tags:</strong> <?= $jobs['tags'] ?>
+                    <strong>Tags:</strong> <?= $jobs->tags ?>
                   </li>
                 </ul>
                 <a href="details.html"
