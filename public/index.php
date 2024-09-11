@@ -1,7 +1,16 @@
 <?php
 require '../helpers.php';
-require basePath('Framework/Router.php');
-require basePath('Framework/Database.php');
+
+// Custom Autoloader
+spl_autoload_register(function($class) {
+    $path = basePath('Framework/' . $class . '.php');
+
+    if(file_exists($path)) {
+        require $path;
+    } else {
+        die('Invalid Class File');
+    }
+});
 
 // Instantiate the Router 
 $router = new Router();
