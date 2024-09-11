@@ -12,7 +12,6 @@ $params = [
 
 $listing = $db->query($query, $params)->fetch();
 
-inspect($listing);
 
 loadView('listings/show', [
     'listing' => $listing
