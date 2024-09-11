@@ -19,7 +19,7 @@ function basePath($path = '') {
  * 
  */
 function loadView($name, $data = []) {
-    $path = basePath('views/' . $name);
+    $path = basePath('App/views/' . $name);
     $ext = '.view.php';
     $fullPath = $path . $ext;
 
@@ -39,7 +39,7 @@ function loadView($name, $data = []) {
  * @return void
  */
 function loadPartial($name) {
-    $path = basePath("views/partials/{$name}.php");
+    $path = basePath("App/views/partials/{$name}.php");
 
     if(!file_exists($path)) {
         die('View File not found ' . $path);
