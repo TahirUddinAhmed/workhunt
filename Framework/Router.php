@@ -10,14 +10,18 @@ class Router {
      *
      * @param string $method
      * @param string $uri
-     * @param string $controller
+     * @param string $action
      * @return void
      */
-    protected function registerRoute($method, $uri, $controller) {
+    protected function registerRoute($method, $uri, $action) {
+        list($controller, $controllerMethod) = explode('@', $action);
+        
+
         $this->routes[] = [
             'method' => $method,
             'uri' => $uri,
-            'controller' => $controller
+            'controller' => $controller,
+            'controllerMethod' => $controllerMethod
         ];
     }
 
@@ -81,13 +85,21 @@ class Router {
      * Route the request (logic)
      * 
      * @param string $uri
-     * @param string $method
+     * @param string $method (HTTP method)
      * @return void
      */
     public function route($uri, $method) {
         foreach($this->routes as $route) {
             if($route['uri'] === $uri && $route['method'] === $method) {
-                require basePath('App/' . $route['controller']);
+                // require basePath('App/' . $route['controller']);
+                // extract controller and controller method
+                $controller = 'App\\Controllers\\' . $route['controller'];
+                $controllerMethod = $route['controllerMethod'];
+
+                // Instantiate the controller and call the method 
+                $controllerInstance = new $controller();
+                // call method
+                $controllerInstance->$controllerMethod();
                 return; // if found return the function
             }
         }
