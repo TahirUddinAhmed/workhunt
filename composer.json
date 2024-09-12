@@ -1,0 +1,16 @@
+{
+    "name": "tahiruddinahmed/workhunt",
+    "description": "A simple job listing application",
+    "authors": [
+        {
+            "name": "Tahir Uddin Ahmed",
+            "email": "01tahirahmed@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Framework\\": "Framework/",
+            "App\\": "App/"
+        }
+    }
+}
