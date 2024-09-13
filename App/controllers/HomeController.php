@@ -12,6 +12,11 @@ class HomeController {
         $this->db = new Database($config);
     }
 
+    /**
+     * Show the latest Listings
+     *
+     * @return void
+     */
     public function index() {
         $query = 'SELECT * FROM listings';
         $listings = $this->db->query($query)->fetchAll();

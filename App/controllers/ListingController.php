@@ -13,6 +13,11 @@ class ListingController {
         $this->db = new Database($config);
     }
 
+    /**
+     * Show All Listings
+     *
+     * @return void
+     */
     public function index() {
         $query = 'SELECT * FROM listings';
         $listings = $this->db->query($query)->fetchAll();
@@ -23,7 +28,11 @@ class ListingController {
 
     }
 
-    // post a job 
+    /**
+     * Show the Create Listing Form
+     *
+     * @return void
+     */
     public function create() {
         loadView('listings/create');
     }
