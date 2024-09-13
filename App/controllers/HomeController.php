@@ -14,7 +14,7 @@ class HomeController {
 
     public function index() {
         $query = 'SELECT * FROM listings';
-        $listings = $this->db->query($query);
+        $listings = $this->db->query($query)->fetchAll();
 
         loadView('home', [
             'listings' => $listings

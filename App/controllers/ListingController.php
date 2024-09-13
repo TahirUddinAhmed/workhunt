@@ -15,7 +15,7 @@ class ListingController {
 
     public function index() {
         $query = 'SELECT * FROM listings';
-        $listings = $this->db->query($query);
+        $listings = $this->db->query($query)->fetchAll();
 
         loadView('listings/index', [
             'listings' => $listings
