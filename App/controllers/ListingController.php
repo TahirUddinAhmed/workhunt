@@ -37,8 +37,15 @@ class ListingController {
         loadView('listings/create');
     }
 
-    public function show() {
-        $id = $_GET['id'] ?? '';
+    /**
+     * Show single Listing
+     *
+     * @param array $params
+     * @return void
+     */
+    public function show($params) {
+        // $id = $_GET['id'] ?? '';
+        $id = $params['id'] ?? '';
 
         $query = 'SELECT * FROM listings WHERE id = :id';
         $params = [
