@@ -40,11 +40,12 @@ class Database {
      * @throws PDOException
      */
     public function query($query, $params = []) {
+        // inspectAndDie($query);
         try {
             $sth = $this->conn->prepare($query);
             // bind named params
             foreach($params as $param => $value) {
-                $sth->bindParam(':'. $param, $value);
+                $sth->bindValue(':'. $param, $value);
             }
             // execute the query 
             $sth->execute();
