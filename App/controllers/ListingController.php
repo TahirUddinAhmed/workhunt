@@ -129,4 +129,13 @@ class ListingController {
             redirect('/listings');
         }
     }
+
+    /**
+     * Destroy or delete listings
+     * 
+     * @return void
+     */
+    public function destroy() {
+        inspect('Hello');
+    }
 }
