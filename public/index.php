@@ -1,4 +1,5 @@
 <?php
+session_start();
 require '../helpers.php';
 require basePath('vendor/autoload.php');
 
