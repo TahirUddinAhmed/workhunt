@@ -148,7 +148,7 @@ class ListingController {
             ErrorController::notFound('Listing not found');
             return;
         }
-        // Delete listings
+        // Delete listing
         $this->db->query('DELETE FROM listings WHERE id = :id', $params);
 
         redirect('/listings');
