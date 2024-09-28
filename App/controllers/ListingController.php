@@ -161,7 +161,7 @@ class ListingController {
     }
 
     /**
-     * Edit Form 
+     * Show the Edit listing Form 
      * 
      * @param array $params
      * @return void
@@ -201,7 +201,67 @@ class ListingController {
     public function update($params) {
         $id = $params['id'];
 
-        $data = $_POST;
+        $params = [
+            'id' => $id
+        ];
+
+        $query = 'SELECT * FROM listings WHERE id = :id';
+        $listing = $this->db->query($query, $params)->fetch();
+
+        // Check if listing exits
+        if(!$listing) {
+            ErrorController::notFound('Listing not found');
+            return;
+        }
+
+
+        $allowedFields = ['title', 'description', 'salary', 'requirements', 'benefits', 'company', 'address', 'city', 'state', 'phone', 'email', 'tags'];
+
+        $UpdateValues = array_intersect_key($_POST, array_flip($allowedFields));
+
+        $UpdateValues['user_id'] = 1;
+        $UpdateValues['id'] = $id;
+
+        $UpdateValues = array_map('sanitize', $UpdateValues);
+
+        $requiredFields = ['title', 'salary', 'description', 'email', 'city', 'state'];
+
+        $errors = [];
+
+        foreach($requiredFields as $field) {
+            if(empty($UpdateValues[$field]) || !Validation::string($UpdateValues[$field])) {
+                $errors[$field] = ucfirst($field . ' is required');
+            }
+        }
+
+        if(!empty($errors)) {
+            loadView('/listings/edit', [
+                'errors' => $errors,
+                'listing' => $listing
+            ]);
+        } else {
+            // update the listings 
+            $Updatefields = [];
+
+            foreach($UpdateValues as $field => $value) {
+                $Updatefields[] = "{$field} = :{$field}";
+            }
+
+            // convert the array into string
+            $Updatefields = implode(', ', $Updatefields);
+
+            $query = "UPDATE listings SET {$Updatefields} WHERE id = :id";
+
+            $this->db->query($query, $UpdateValues);
+            // inspectAndDie($UpdateValues);
+
+            $_SESSION['success_message'] = 'Listing Updated Successfully';
+
+            redirect('/listings');
+        }
+
+
+
         
     }
 }
