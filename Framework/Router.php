@@ -71,17 +71,7 @@ class Router {
         $this->registerRoute('DELETE', $uri, $controller);
     }
 
-    /**
-     * Load Error Page
-     * 
-     * @param int $httpCode
-     * @return void
-     */
-    protected function error($httpCode = 404) {
-        http_response_code($httpCode);
-        loadView("error/{$httpCode}");
-        exit;
-    }
+
 
     /**
      * Route the request (logic)
