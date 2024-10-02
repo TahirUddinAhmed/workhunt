@@ -38,12 +38,13 @@ function loadView($name, $data = []) {
  * @param string $name
  * @return void
  */
-function loadPartial($name) {
+function loadPartial($name, $data = []) {
     $path = basePath("App/views/partials/{$name}.php");
 
     if(!file_exists($path)) {
         die('View File not found ' . $path);
     } else {
+        extract($data);
         require $path;
     }
 }
