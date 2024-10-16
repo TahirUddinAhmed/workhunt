@@ -1,4 +1,8 @@
-  <!-- Bottom Banner -->
+<?php 
+ use Framework\Session;
+?>
+<!-- Bottom Banner -->
+  <?php if(Session::has('user')) : ?>
   <section class="container mx-auto my-6">
       <div
         class="bg-blue-800 text-white rounded p-4 flex items-center justify-between"
@@ -17,3 +21,4 @@
         </a>
       </div>
     </section>
+ <?php endif; ?>   
