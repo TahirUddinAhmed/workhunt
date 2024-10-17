@@ -135,13 +135,19 @@ class UserController {
      * @return void
      */
     public function logout() {
+        // Clear all session data
         Session::clearAll();
-
+    
+        // Get session cookie parameters
         $params = session_get_cookie_params();
-        setCookie('PHPSESSID', time() - 86400, $params['path'], $params['domain']);
-
+    
+        // Destroy the session cookie by setting its expiration time in the past
+        setcookie('PHPSESSID', '', time() - 86400, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+    
+        // Redirect to homepage
         redirect('/');
     }
+    
 
     /**
      * Authenticate a user with email and passsword 
