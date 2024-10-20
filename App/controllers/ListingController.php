@@ -127,7 +127,8 @@ class ListingController {
            
             $this->db->query($query, $newListingData);
 
-            $_SESSION['success_message'] = 'Listings added successfully';
+            // $_SESSION['success_message'] = 'Listings added successfully';
+            Session::set('success_message', 'listing added successfully');
 
             redirect('/listings');
         }
@@ -156,7 +157,8 @@ class ListingController {
 
         // Authorization
         if(!Authorization::isOwner($listing->user_id)) {
-            $_SESSION['error_message'] = 'You are not authorized to delete this listing';
+            // $_SESSION['error_message'] = 'You are not authorized to delete this listing';
+            Session::setFlashMessage('error_message', 'You are not authorized to delete this listing');
             return redirect('/listings/'. $listing->id);
         }
 
@@ -164,7 +166,8 @@ class ListingController {
         $this->db->query('DELETE FROM listings WHERE id = :id', $params);
 
         // Set flash message 
-        $_SESSION['success_message'] = 'Listing deleted successfully';
+        // $_SESSION['success_message'] = 'Listing deleted successfully';
+        Session::set('success_message', 'Listing deleted successfully');
 
         redirect('/listings');
 
@@ -193,6 +196,10 @@ class ListingController {
             return;
         }
 
+        if(!Authorization::isOwner($listing->user_id)) {
+            Session::setFlashMessage('error_message', 'You are not authorized to edit this listings');
+            return redirect('/listings/' . $listing->id);
+        }
         
 
         // show the edit listing page 
@@ -250,6 +257,10 @@ class ListingController {
                 'listing' => $listing
             ]);
         } else {
+            // if(!Authorization::isOwner($listing->user_id)) {
+            //     Session::setFlashMessage('error_message', 'Your are not authorized to edit this listing');
+            //     return redirect('/listings/' . $listing->id);
+            // }
             // update the listings 
             $Updatefields = [];
 
@@ -265,7 +276,8 @@ class ListingController {
             $this->db->query($query, $UpdateValues);
             // inspectAndDie($UpdateValues);
 
-            $_SESSION['success_message'] = 'Listing Updated Successfully';
+            // $_SESSION['success_message'] = 'Listing Updated Successfully';
+            Session::getFlashMessage('success_message', 'Listing updated successfully');
 
             redirect('/listings');
         }
