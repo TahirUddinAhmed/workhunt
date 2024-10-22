@@ -236,7 +236,7 @@ class ListingController {
 
         $UpdateValues = array_intersect_key($_POST, array_flip($allowedFields));
 
-        $UpdateValues['user_id'] = 1;
+        $UpdateValues['user_id'] = Session::get('user')['id'];
         $UpdateValues['id'] = $id;
 
         $UpdateValues = array_map('sanitize', $UpdateValues);
@@ -257,10 +257,10 @@ class ListingController {
                 'listing' => $listing
             ]);
         } else {
-            // if(!Authorization::isOwner($listing->user_id)) {
-            //     Session::setFlashMessage('error_message', 'Your are not authorized to edit this listing');
-            //     return redirect('/listings/' . $listing->id);
-            // }
+            if(!Authorization::isOwner($listing->user_id)) {
+                Session::setFlashMessage('error_message', 'Your are not authorized to update this listing');
+                return redirect('/listings/' . $listing->id);
+            }
             // update the listings 
             $Updatefields = [];
 
