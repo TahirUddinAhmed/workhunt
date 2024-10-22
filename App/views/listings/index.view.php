@@ -4,7 +4,15 @@
 
 <section>
       <div class="container mx-auto p-4 mt-4">
-        <div class="text-center text-3xl mb-4 font-bold border border-gray-300 p-3">All Jobs</div>
+        <div class="text-center text-3xl mb-4 font-bold border border-gray-300 p-3">
+          <?php if(isset($keywords) && $keywords !== '') : ?>
+            Search Results for: <?= htmlspecialchars($keywords) ?>
+          <?php elseif(isset($location)) : ?>
+            Search Results for: <?= htmlspecialchars($location) ?>
+          <?php else : ?>
+            All Jobs
+          <?php endif; ?>
+        </div>
         
         <?= loadPartial('message') ?>
 

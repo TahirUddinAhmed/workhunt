@@ -5,6 +5,7 @@ $router->get('/listings', 'ListingController@index');
 $router->get('/listings/create', 'ListingController@create', ['auth']);
 $router->get('listings/edit/{id}', 'ListingController@edit', ['auth']);
 $router->get('/listings/{id}', 'ListingController@show');
+$router->get('listing/search', 'ListingController@search');
 
 // Form Submission
 $router->post('/listings', 'ListingController@store');
