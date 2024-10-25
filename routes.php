@@ -8,7 +8,7 @@ $router->get('/listings/{id}', 'ListingController@show');
 $router->get('listing/search', 'ListingController@search');
 
 // Form Submission
-$router->post('/listings', 'ListingController@store');
+$router->post('/listings', 'ListingController@store1');
 $router->put('/listings/{id}', 'ListingController@update', ['auth']);
 // Delete Request 
 $router->delete('/listings/{id}', 'ListingController@destroy', ['auth']);

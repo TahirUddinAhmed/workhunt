@@ -73,7 +73,7 @@ class ListingController {
      */
     public function store() {
         $allowedFields = ['title', 'description', 'salary', 'requirements', 'benefits', 'tags' , 'company', 'address', 'city', 'state', 'phone', 'email'];
-        
+         
         $newListingData = array_intersect_key($_POST, array_flip($allowedFields));
 
         $newListingData['user_id'] = Session::get('user')['id'];
@@ -132,6 +132,139 @@ class ListingController {
 
             redirect('/listings');
         }
+    }
+
+    /**
+     * Store 
+     * 
+     * @return void
+     */
+    public function store1() {
+        $allowedFields = ['title', 'description', 'salary', 'requirements', 'benefits', 'tags' , 'job_type', 'remote', 'address', 'city', 'state', 'zip_code', 'company', 'company_description', 'company_website', 'phone', 'email'];
+        
+        $newDataListing = array_intersect_key($_POST, array_flip($allowedFields));
+
+        // User Id 
+        $newDataListing['user_id'] = Session::get('user')['id'];
+
+        // Sanitize the user input 
+        $sanitizeData = [];
+        foreach($newDataListing as $key => $data) {
+            $sanitizeData[$key] = sanitize($data);
+        }
+        $newDataListing = $sanitizeData;
+
+        // required Fields
+        $requiredFields = ['title', 'description', 'company', 'phone', 'email', 'city', 'state', 'salary'];
+        
+        $errors = [];
+        
+        foreach($requiredFields as $field) {
+            if(empty($newDataListing[$field]) && !Validation::string($newDataListing[$field])) {
+                $errors[$field] = ucfirst($field) . " is required";
+            }
+        }
+
+        // Verify Image 
+        if($_FILES['company_logo']['error'] === UPLOAD_ERR_NO_FILE) {
+            $errors['company_logo'] = 'Company Logo is required';
+        }
+        
+
+        
+        if(!empty($errors)) {
+            loadView('/listings/create', [
+                'errors' => $errors,
+                'listings' => $newDataListing
+            ]);
+            exit;
+        } else {
+            $allowed_ext = ['png', 'jpg', 'jpeg'];
+
+            $company_logo = $_FILES['company_logo']['name'];
+            $image_size = $_FILES['company_logo']['size'];
+            $image_temp = $_FILES['company_logo']['tmp_name'];
+
+            $newDataListing['company_logo'] = 'workhunt_company-' . uniqid() . $company_logo;
+            
+            $target_dir = basePath("public/images/company-logo/{$newDataListing['company_logo']}");
+
+            // inspect($target_dir);
+            
+            $image_ext = explode('.', $newDataListing['company_logo']);
+            $image_ext = strtolower(end($image_ext));
+
+            // Validation
+            $check = getimagesize($image_temp);
+
+            // inspect($check);
+
+            if($check == false) {
+                loadView('/listings/create', [
+                    'errors' => 'File is not a valid image',
+                    'listings' => $newDataListing
+                ]);
+                exit;
+            }
+
+
+            if(in_array($image_ext, $allowed_ext)) {
+                // check image size
+                $maxFileSize = 1 * 1024 * 1024; // 1MB
+
+                if($image_size > $maxFileSize) {
+                    $errors['image_size'] = 'File is too large, Maximum file size is 1MB';
+                    loadView('/listings/create', [
+                        'errors' => $errors,
+                        'listings' => $newDataListing
+                    ]);
+                    exit;
+                } else {
+                    if(move_uploaded_file($image_temp, $target_dir)) {
+                        // make the insert query 
+                        // INSERT INTO listings(title, description, salary, ..... company_logo) VALUES(:title, :description, :salary,.....,:company_logo);
+                        $fields = [];
+
+                        foreach($newDataListing as $field => $value) {
+                            $fields[] = $field;
+                        }
+
+                        $fields = implode(',', $fields);
+
+                        $values = [];
+
+                        foreach($newDataListing as $field => $value) {
+                            // convert empty string to nulll
+                            if($value === '') {
+                                $newDataListing[$field] = null;
+                            }
+                            $values[] = ':' . $field;
+                        }
+
+                        $values = implode(',', $values);
+
+                        $query = "INSERT INTO listings ({$fields}) VALUES ({$values})";
+
+                        $this->db->query($query, $newDataListing);
+
+                        // message 
+                        Session::set('success_message', 'Listing created successfully');
+
+                        redirect('/listings');
+                    }
+                }
+
+                
+            }
+
+            
+        }
+        
+        
+        // inspectAndDie($errors);
+
+
+
     }
 
     /**
