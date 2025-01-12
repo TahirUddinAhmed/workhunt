@@ -19,7 +19,7 @@ class Router {
      */
     protected function registerRoute($method, $uri, $action, $middleware = []) {
         list($controller, $controllerMethod) = explode('@', $action);
-        
+
 
         $this->routes[] = [
             'method' => $method,
@@ -104,13 +104,13 @@ class Router {
             
             // split the route URI into segments 
             $routeSegments = explode('/', trim($route['uri'], '/'));
-
+            // inspectAndDie($uriSegments);
             $match = true;
 
             // Check if the number of segments matches 
             if(count($uriSegments) === count($routeSegments) && strtoupper($route['method'] === $requestMethod)) {
                 $params = [];
-
+                
                 $match = true;
 
                 for($i = 0; $i < count($uriSegments); $i++) {
