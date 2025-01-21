@@ -444,4 +444,25 @@ class ListingController {
             'location' => $location
         ]);
     }
+
+    /**
+     * Apply for job application 
+     * 
+     * @param array $params
+     * @return void
+     */
+    public function apply($params) {
+        $id = $params['id'] ?? '';
+
+        $param = [
+            'id' => $id
+        ];
+        // fetch listings 
+        $listing = $this->db->query("SELECT * FROM listings WHERE id = :id", $param)->fetch();
+
+        loadView('/listings/apply', [
+            'listing' => $listing,
+            'job_seeker' => Session::get('user')
+        ]);
+    }
 }

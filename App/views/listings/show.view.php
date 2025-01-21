@@ -57,11 +57,10 @@
         <p><?= $listing->benefits ?></p>
     </div>
     <p class="my-5">
-        Put "Job Application" as the subject of your email and attach your
-        resume.
+        Please log in before apply for any job
     </p>
     <a
-        href="mailto:<?= $listing->email ?>"
+        href="/listings/apply/<?= $listing->id ?>"
         class="block w-full text-center px-5 py-2.5 shadow-sm rounded border text-base font-medium cursor-pointer text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
         Apply Now
     </a>

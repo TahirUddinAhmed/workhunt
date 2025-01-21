@@ -15,9 +15,8 @@
         </div>
         
         <?= loadPartial('message') ?>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-         <?php inspectAndDie($listings) ?>
+ 
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">         
         <?php foreach($listings as $jobs): ?>
             <!-- Job Listing 1: Software Engineer -->
             <div class="rounded-lg shadow-md bg-white">
