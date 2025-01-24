@@ -460,6 +460,12 @@ class ListingController {
         // fetch listings 
         $listing = $this->db->query("SELECT * FROM listings WHERE id = :id", $param)->fetch();
 
+        // Only job seekers can apply for job
+        if(!Authorization::isJobSeeker(Session::get('user')['id'])) {
+            Session::setFlashMessage('error_message', 'Only Job Seeker can apply for jobs');
+            return redirect('/listings');
+        }
+        
         loadView('/listings/apply', [
             'listing' => $listing,
             'job_seeker' => Session::get('user')

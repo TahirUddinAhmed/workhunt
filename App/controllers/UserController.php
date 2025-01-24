@@ -44,6 +44,7 @@ class UserController {
         $state = $_POST['state'];
         $password = $_POST['password'];
         $passwordConfirmation = $_POST['password_confirmation'];
+        $userRole = 'job_seeker';
 
         $errors = [];
 
@@ -100,15 +101,17 @@ class UserController {
         }
 
         // Create user account
+       
         $params = [
             'name' => $name,
             'email' => $email,
             'city' => $city,
             'state' => $state,
+            'role' => $userRole,
             'password' => password_hash($password, PASSWORD_DEFAULT)
         ];
 
-        $query = 'INSERT INTO users (name, email, city, state, password) VALUES (:name, :email, :city, :state, :password);';
+        $query = 'INSERT INTO users (name, email, city, state, password, role) VALUES (:name, :email, :city, :state, :password, :role);';
         $this->db->query($query, $params);
 
         // Get New user ID
@@ -119,7 +122,8 @@ class UserController {
             'name' => $name,
             'email' => $email,
             'city' => $city,
-            'state' => $state
+            'state' => $state,
+            'role' => $userRole
         ]);
 
         
@@ -206,7 +210,8 @@ class UserController {
             'name' => $user->name,
             'email' => $user->email,
             'city' => $user->city,
-            'state' => $user->state
+            'state' => $user->state,
+            'role' => $user->role
         ]);
 
         redirect('/');
