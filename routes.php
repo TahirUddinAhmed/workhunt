@@ -6,9 +6,9 @@ $router->get('/listings/create', 'ListingController@create', ['auth']);
 $router->get('listings/edit/{id}', 'ListingController@edit', ['auth']);
 $router->get('/listings/{id}', 'ListingController@show');
 $router->get('listing/search', 'ListingController@search');
-$router->get('/listings/apply/{id}', 'ListingController@apply', ['job_seeker']);
+$router->get('/listings/apply/{id}', 'ListingController@apply', ['auth']);
 // Form Submission
-$router->post('/listings', 'ListingController@store1');
+$router->post('/listings', 'ListingController@store');
 $router->put('/listings/{id}', 'ListingController@update', ['auth']);
 // Delete Request 
 $router->delete('/listings/{id}', 'ListingController@destroy', ['auth']);

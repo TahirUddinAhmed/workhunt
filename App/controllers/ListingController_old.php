@@ -2,21 +2,18 @@
 
 namespace App\Controllers;
 
-use App\Models\JobTypes;
+use Framework\Database;
 use Framework\Validation;
 use Framework\Session;
 use Framework\Authorization;
 
-use App\Models\Listing;
-
 class ListingController {
-    protected $listings;
-    protected $jobTypes;
+    protected $db;
 
     public function __construct()
     {
-        $this->listings = new Listing();
-        $this->jobTypes = new JobTypes();
+        $config = require basePath('config/db.php');
+        $this->db = new Database($config);
     }
 
     /**
@@ -25,11 +22,11 @@ class ListingController {
      * @return void
      */
     public function index() {
-        $listings = $this->listings->findAll();
+        $query = 'SELECT * FROM listings ORDER BY id DESC';
+        $listings = $this->db->query($query)->fetchAll();
+
+        // fetch the job type name 
         
-        foreach($listings as $listing) {
-            $listing->job_type = $this->listings->jobType($listing->job_type_id);
-        }
 
         loadView('listings/index', [
             'listings' => $listings
@@ -48,7 +45,8 @@ class ListingController {
             return redirect('/listings');
         }
 
-        $job_types = $this->jobTypes->findAll();
+        $query = "SELECT * FROM job_types ORDER BY created_at DESC";
+        $job_types = $this->db->query($query)->fetchAll();
 
         
         loadView('listings/create', [
@@ -65,7 +63,12 @@ class ListingController {
     public function show($params) {
         $id = $params['id'] ?? '';
 
-        $listing = $this->listings->find($id);
+        $query = 'SELECT * FROM listings WHERE id = :id';
+        $params = [
+            'id'=> $id
+        ];
+        
+        $listing = $this->db->query($query, $params)->fetch();
         
         if(!$listing) {
             ErrorController::notFound('Listing Not Found');
@@ -78,11 +81,79 @@ class ListingController {
     }
 
     /**
-     * Store 
+     * Store data in database 
      * 
      * @return void
      */
     public function store() {
+        $allowedFields = ['title', 'description', 'salary', 'requirements', 'benefits', 'tags' , 'company', 'address', 'city', 'state', 'phone', 'email'];
+         
+        $newListingData = array_intersect_key($_POST, array_flip($allowedFields));
+
+        $newListingData['user_id'] = Session::get('user')['id'];
+
+        $newListingData = array_map('sanitize', $newListingData);
+        
+        $requiredFields = ['title', 'description', 'email', 'city', 'state', 'salary'];
+        
+        $errors = [];
+
+        foreach($requiredFields as $fields) {
+            if(empty($newListingData[$fields]) || !Validation::string($newListingData[$fields])) {
+                $errors[$fields] = ucfirst($fields) . ' is required'; 
+            }
+            // inspact($newListingData[$fields]);
+        }
+    
+
+        if(!empty($errors)) {
+            // Reload views with errors
+            loadView('listings/create', [
+                'errors' => $errors,
+                'listing' => $newListingData
+            ]);
+        } else {
+            // Submit data
+            $fields = [];
+            foreach($newListingData as $field => $value) {
+                $fields[] = $field;
+            }
+
+            // Convert the array intro string 
+            $fields = implode(', ', $fields);
+
+            // inspactAndDie($fields);
+
+            $values = [];
+
+            foreach($newListingData as $field => $value) {
+                // Convert empty string to null
+                if($value === '') {
+                    $newListingData[$field] = null;
+                }
+                $values[] = ':' . $field;
+            }
+
+            // convert array into string 
+            $values = implode(', ', $values);
+
+            $query = "INSERT INTO listings ({$fields}) VALUES({$values})";
+           
+            $this->db->query($query, $newListingData);
+
+            // $_SESSION['success_message'] = 'Listings added successfully';
+            Session::set('success_message', 'listing added successfully');
+
+            redirect('/listings');
+        }
+    }
+
+    /**
+     * Store 
+     * 
+     * @return void
+     */
+    public function store1() {
         $allowedFields = ['title', 'description', 'salary', 'requirements', 'benefits', 'tags' , 'job_type_id', 'remote', 'address', 'city', 'state', 'zip_code', 'company', 'company_description', 'company_website', 'phone', 'email'];
         
         $newDataListing = array_intersect_key($_POST, array_flip($allowedFields));
@@ -114,7 +185,8 @@ class ListingController {
         }
         
         // fetch job types from db 
-        $job_types = $this->jobTypes->findAll();
+        $query = "SELECT * FROM job_types ORDER BY created_at DESC";
+        $job_types = $this->db->query($query)->fetchAll();
         
         if(!empty($errors)) {
             // inspectAndDie($errors);
@@ -167,10 +239,31 @@ class ListingController {
                     exit;
                 } else {
                     if(move_uploaded_file($image_temp, $target_dir)) {
-                        // insert 
-                        $this->listings->insert($newDataListing);
-                        
-                        
+                        // make the insert query 
+                        // INSERT INTO listings(title, description, salary, ..... company_logo) VALUES(:title, :description, :salary,.....,:company_logo);
+                        $fields = [];
+
+                        foreach($newDataListing as $field => $value) {
+                            $fields[] = $field;
+                        }
+
+                        $fields = implode(',', $fields);
+
+                        $values = [];
+
+                        foreach($newDataListing as $field => $value) {
+                            // convert empty string to nulll
+                            if($value === '') {
+                                $newDataListing[$field] = null;
+                            }
+                            $values[] = ':' . $field;
+                        }
+
+                        $values = implode(',', $values);
+
+                        $query = "INSERT INTO listings ({$fields}) VALUES ({$values})";
+
+                        $this->db->query($query, $newDataListing);
 
                         // message 
                         Session::set('success_message', 'Listing created successfully');
@@ -205,8 +298,7 @@ class ListingController {
             'id' => $id
         ];
 
-        // $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
-        $listing = $this->listings->find($id);
+        $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
 
         // Check if listing exists
         if(!$listing) {
@@ -221,15 +313,8 @@ class ListingController {
             return redirect('/listings/'. $listing->id);
         }
 
-        // Path to the logo file 
-        $logoPath = basePath("public/images/company-logo/{$listing->company_logo}");
-
-        if(file_exists($logoPath)) {
-            unlink($logoPath);
-        }
-
         // Delete listing
-        $this->listings->delete($listing->id);
+        $this->db->query('DELETE FROM listings WHERE id = :id', $params);
 
         // Set flash message 
         // $_SESSION['success_message'] = 'Listing deleted successfully';
@@ -248,7 +333,13 @@ class ListingController {
     public function edit($params) {
         $id = $params['id'];
 
-        $listing = $this->listings->find($id);
+        $params = [
+            'id' => $id
+        ];
+
+        // fetch the listings 
+        $query = 'SELECT * FROM listings WHERE id = :id';
+        $listing = $this->db->query($query, $params)->fetch();
 
         // if listing not exits 
         if(!$listing) {
@@ -278,7 +369,12 @@ class ListingController {
     public function update($params) {
         $id = $params['id'];
 
-        $listing = $this->listings->find($id);
+        $params = [
+            'id' => $id
+        ];
+
+        $query = 'SELECT * FROM listings WHERE id = :id';
+        $listing = $this->db->query($query, $params)->fetch();
 
         // Check if listing exits
         if(!$listing) {
@@ -316,8 +412,19 @@ class ListingController {
                 Session::setFlashMessage('error_message', 'Your are not authorized to update this listing');
                 return redirect('/listings/' . $listing->id);
             }
-            
-            $this->listings->update($listing->id, $UpdateValues);
+            // update the listings 
+            $Updatefields = [];
+
+            foreach($UpdateValues as $field => $value) {
+                $Updatefields[] = "{$field} = :{$field}";
+            }
+
+            // convert the array into string
+            $Updatefields = implode(', ', $Updatefields);
+
+            $query = "UPDATE listings SET {$Updatefields} WHERE id = :id";
+
+            $this->db->query($query, $UpdateValues);
             // inspectAndDie($UpdateValues);
 
             // $_SESSION['success_message'] = 'Listing Updated Successfully';
