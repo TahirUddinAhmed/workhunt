@@ -37,7 +37,13 @@ class ListingController {
      * @return void
      */
     public function create() {
-        loadView('listings/create');
+        $query = "SELECT * FROM job_types ORDER BY created_at DESC";
+        $job_types = $this->db->query($query)->fetchAll();
+
+        
+        loadView('listings/create', [
+            'job_types' => $job_types
+        ]);
     }
 
     /**
@@ -140,7 +146,7 @@ class ListingController {
      * @return void
      */
     public function store1() {
-        $allowedFields = ['title', 'description', 'salary', 'requirements', 'benefits', 'tags' , 'job_type', 'remote', 'address', 'city', 'state', 'zip_code', 'company', 'company_description', 'company_website', 'phone', 'email'];
+        $allowedFields = ['title', 'description', 'salary', 'requirements', 'benefits', 'tags' , 'job_type_id', 'remote', 'address', 'city', 'state', 'zip_code', 'company', 'company_description', 'company_website', 'phone', 'email'];
         
         $newDataListing = array_intersect_key($_POST, array_flip($allowedFields));
 
@@ -155,7 +161,7 @@ class ListingController {
         $newDataListing = $sanitizeData;
 
         // required Fields
-        $requiredFields = ['title', 'description', 'company', 'phone', 'email', 'city', 'state', 'salary'];
+        $requiredFields = ['title', 'description', 'company', 'phone', 'email', 'city', 'state', 'salary', 'job_type_id'];
         
         $errors = [];
         
@@ -170,12 +176,16 @@ class ListingController {
             $errors['company_logo'] = 'Company Logo is required';
         }
         
-
+        // fetch job types from db 
+        $query = "SELECT * FROM job_types ORDER BY created_at DESC";
+        $job_types = $this->db->query($query)->fetchAll();
         
         if(!empty($errors)) {
+            // inspectAndDie($errors);
             loadView('/listings/create', [
                 'errors' => $errors,
-                'listings' => $newDataListing
+                'listings' => $newDataListing,
+                'job_types' => $job_types
             ]);
             exit;
         } else {

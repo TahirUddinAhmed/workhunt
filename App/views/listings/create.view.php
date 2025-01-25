@@ -4,9 +4,7 @@
 <section class="flex justify-center items-center mt-20">
       <div class="bg-white p-8 rounded-lg shadow-md w-full md:w-600 mx-6">
         <h2 class="text-4xl text-center font-bold mb-4">Create Job Listing</h2>
-        <?php loadPartial('errors', [
-          'errors' => $errors ?? []
-        ]) ?>
+        
         <form
                     method="POST"
                     action="/listings"
@@ -26,10 +24,11 @@
                             id="title"
                             type="text"
                             name="title"
-                            class="w-full px-4 py-2 border rounded focus:outline-none"
+                            class="w-full px-4 py-2 border rounded focus:outline-none <?= isset($errors['title']) ? 'border-red-400' : '' ?>"
                             placeholder="Software Engineer"
                             value="<?= $listings['title'] ?? '' ?>"
                         />
+                        <span class="text-red-500 mt-2 text-sm font-normal"><?= $errors['title'] ?? '' ?></span>
                     </div>
 
                     <div class="mb-4">
@@ -41,9 +40,10 @@
                             rows="7"
                             id="description"
                             name="description"
-                            class="w-full px-4 py-2 border rounded focus:outline-none"
+                            class="w-full px-4 py-2 border rounded focus:outline-none <?= isset($errors['description']) ? 'border-red-400' : '' ?>"
                             placeholder="We are seeking a skilled and motivated Software Developer to join our growing development team..."
                         ><?= $listings['description'] ?? '' ?></textarea>
+                        <span class="text-red-500 mt-2 text-sm font-normal"><?= $errors['description'] ?? '' ?></span>
                     </div>
 
                     <div class="mb-4">
@@ -54,10 +54,11 @@
                             id="salary"
                             type="number"
                             name="salary"
-                            class="w-full px-4 py-2 border rounded focus:outline-none"
+                            class="w-full px-4 py-2 border rounded focus:outline-none <?= isset($errors['salary']) ? 'border-red-400': '' ?>"
                             placeholder="90000"
                             value="<?= $listings['salary'] ?? '' ?>"
                         />
+                        <span class="text-red-500 mt-2 text-sm font-normal"><?= $errors['salary'] ?? '' ?></span>
                     </div>
 
                     <div class="mb-4">
@@ -104,19 +105,17 @@
                         >
                         <select
                             id="job_type"
-                            name="job_type"
-                            class="w-full px-4 py-2 border rounded focus:outline-none"
+                            name="job_type_id"
+                            class="w-full px-4 py-2 border rounded focus:outline-none <?= isset($errors['job_type_id']) ? 'border-red-400' : '' ?>"
                         >
-                            <option value="Full-Time" selected>
-                                Full-Time
-                            </option>
-                            <option value="Part-Time">Part-Time</option>
-                            <option value="Contract">Contract</option>
-                            <option value="Temporary">Temporary</option>
-                            <option value="Internship">Internship</option>
-                            <option value="Volunteer">Volunteer</option>
-                            <option value="On-Call">On-Call</option>
+                        <?php if(!empty($job_types)) : ?>
+                            <option value="" selected>Choose Job Type</option>
+                            <?php foreach($job_types as $type) : ?>
+                                <option value="<?= $type->id ?>"><?= $type->type_name ?></option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                         </select>
+                        <span class="text-red-500 mt-2 text-sm font-normal"><?= isset($errors['job_type_id']) ? 'Job Type is required' : '' ?></span>
                     </div>
 
                     <div class="mb-4">
@@ -155,10 +154,11 @@
                             id="city"
                             type="text"
                             name="city"
-                            class="w-full px-4 py-2 border rounded focus:outline-none"
+                            class="w-full px-4 py-2 border rounded focus:outline-none <?= isset($errors['city']) ? 'border-red-400' : '' ?>"
                             placeholder="Albany"
                             value="<?= $listings['city'] ?? '' ?>"
                         />
+                        <span class="text-red-500 mt-2 text-sm font-normal"><?= $errors['city'] ?? '' ?></span>
                     </div>
 
                     <div class="mb-4">
@@ -169,10 +169,11 @@
                             id="state"
                             type="text"
                             name="state"
-                            class="w-full px-4 py-2 border rounded focus:outline-none"
+                            class="w-full px-4 py-2 border rounded focus:outline-none <?= isset($errors['state']) ? 'border-red-400' : '' ?>"
                             placeholder="NY"
                             value="<?= $listings['state'] ?? '' ?>"
                         />
+                        <span class="text-red-500 mt-2 text-sm font-normal"><?= $errors['state'] ?? '' ?></span>
                     </div>
 
                     <div class="mb-4">
@@ -207,6 +208,7 @@
                             placeholder="Company name"
                             value="<?= $listings['company'] ?? '' ?>"
                         />
+                        <span class="text-red-500 mt-2 text-sm font-normal"><?= $errors['company'] ?? '' ?></span>
                     </div>
 
                     <div class="mb-4">
@@ -245,10 +247,11 @@
                             id="contact_phone"
                             type="text"
                             name="phone"
-                            class="w-full px-4 py-2 border rounded focus:outline-none"
+                            class="w-full px-4 py-2 border rounded focus:outline-none <?= isset($errors['phone']) ? 'border-red-400' : '' ?>"
                             placeholder="Enter phone"
                             value="<?= $listings['phone'] ?? '' ?>"
                         />
+                        <span class="text-red-500 mt-2 text-sm font-normal"><?= $errors['phone'] ?? '' ?></span>
                     </div>
 
                     <div class="mb-4">
@@ -259,10 +262,11 @@
                             id="contact_email"
                             type="email"
                             name="email"
-                            class="w-full px-4 py-2 border rounded focus:outline-none"
+                            class="w-full px-4 py-2 border rounded focus:outline-none <?= isset($errors['email']) ? 'border-red-400' : '' ?>"
                             placeholder="Email where you want to receive applications"
                             value="<?= $listings['email'] ?? '' ?>"
                         />
+                        <span class="text-red-500 mt-2 text-sm font-normal"><?= $errors['email'] ?? '' ?></span>
                     </div>
 
                     <div class="mb-4">
@@ -273,8 +277,9 @@
                             id="company_logo"
                             type="file"
                             name="company_logo"
-                            class="w-full px-4 py-2 border rounded focus:outline-none"
+                            class="w-full px-4 py-2 border rounded focus:outline-none <?= isset($errors['company_logo']) ? 'border-red-400' : '' ?>"
                         />
+                        <span class="text-red-500 mt-2 text-sm font-normal"><?= $errors['company_logo'] ?? '' ?></span>
                     </div>
 
                     <button
