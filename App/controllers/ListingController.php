@@ -353,11 +353,9 @@ class ListingController {
     public function apply($params) {
         $id = $params['id'] ?? '';
 
-        $param = [
-            'id' => $id
-        ];
-        // fetch listings 
-        $listing = $this->db->query("SELECT * FROM listings WHERE id = :id", $param)->fetch();
+        $listing = $this->listings->find($id);
+
+        $listing->job_type = $this->listings->jobType($listing->job_type_id);
 
         // Only job seekers can apply for job
         if(!Authorization::isJobSeeker()) {

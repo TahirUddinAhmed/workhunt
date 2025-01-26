@@ -61,6 +61,16 @@
               class="w-full px-4 py-2 border rounded focus:outline-none"
             />
           </div>
+          <div class="mb-4">
+              <select
+                  id="user_role"
+                  name="user_role"
+                  class="w-full px-4 py-2 border rounded focus:outline-none"
+              >
+                  <option value="job_seeker">Job Seeker</option>
+                  <option value="employer">Employer</option>
+              </select>
+          </div>
           <button
             type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded focus:outline-none"
           >

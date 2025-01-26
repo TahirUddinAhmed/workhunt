@@ -68,7 +68,7 @@
           <h2 class="text-xl mb-4 font-semibold text-center">Job Info</h2>
 
           <h3 class="text-lg font-semibold"><?= $listing->title ?></h3>
-          <p class="text-md mb-2 text-gray-600"><?= $listing->job_type ?></p>
+          <p class="text-md mb-2 text-gray-600"><?= $listing->job_type->type_name ?? '' ?></p>
           <h3 class="text-lg mb-2 font-semibold text-blue-500">Job Requirements</h3>
           <p class="mb-4"><?= $listing->requirements ?></p>
           <h3 class="text-lg mb-2 font-semibold text-blue-500">Location</h3>

@@ -2,15 +2,21 @@
 
 namespace App\Controllers;
 
+use App\Models\Employer;
+use App\Models\JobSeeker;
 use App\Models\User;
 use Framework\Validation;
 use Framework\Session;
 
 class UserController {
     protected $user;
+    protected $jobseeker;
+    protected $employer;
 
     public function __construct() {
         $this->user = new User();
+        $this->jobseeker = new JobSeeker();
+        $this->employer = new Employer();
     }
 
     /**
@@ -43,7 +49,9 @@ class UserController {
         $state = $_POST['state'];
         $password = $_POST['password'];
         $passwordConfirmation = $_POST['password_confirmation'];
-        $userRole = 'job_seeker';
+        $userRole = $_POST['user_role'];
+
+       
 
         $errors = [];
 
@@ -62,6 +70,11 @@ class UserController {
 
         if(!Validation::match($password, $passwordConfirmation)) {
             $errors['password_confirmation'] = 'Passwords do not match';
+        }
+        // validate user role 
+        $allowed_field = ['job_seeker', 'employer'];
+        if(!in_array($userRole, $allowed_field)) {
+            $errors['user_role'] = "Invalid user role!";
         }
 
         if(!empty($errors)) {
@@ -104,11 +117,23 @@ class UserController {
             'password' => password_hash($password, PASSWORD_DEFAULT)
         ];
 
+        
         // Insert user into users table
         $this->user->insert($params);
 
         // Get New user ID
         $userId = $this->user->getLastInsertId();
+
+        $userRoleData = [
+            'id' => $userId
+        ];
+
+        // insert user id into database table based on user role
+        if($userRole === 'job_seeker') {
+            $this->jobseeker->insert($userRoleData);
+        } else if($userRole === 'employer') {
+            $this->employer->insert($userRoleData);
+        }
 
         Session::set('user', [
             'id' => $userId,
