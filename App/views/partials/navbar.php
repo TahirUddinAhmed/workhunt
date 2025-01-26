@@ -1,5 +1,6 @@
-<?php 
+<?php
 
+use Framework\Authorization;
 use Framework\Session;
 
 ?>
@@ -18,10 +19,17 @@ use Framework\Session;
               <form method="POST" action="/auth/logout">
                 <button type="submit" class="text-white inline hover:underline">Logout</button>
               </form>
+              <?php if(!Authorization::isJobSeeker()) : ?>
               <a
                 href="/listings/create"
                 class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded hover:shadow-md transition duration-300"
                 ><i class="fa fa-edit"></i> Post a Job</a>
+              <?php else : ?>
+                <a
+                href="#"
+                class="bg-green-500 hover:bg-green-600 text-black px-4 py-2 rounded hover:shadow-md transition duration-300"
+                > Profile</a>
+              <?php endif; ?>
             </div>
 
           <?php else : ?>
