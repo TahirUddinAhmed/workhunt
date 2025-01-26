@@ -2,14 +2,13 @@
 
 namespace App\Controllers;
 
-use Framework\Database;
+use App\Models\Listing;
 
 class HomeController {
-    protected $db;
+    protected $listings;
 
     public function __construct() {
-        $config = require basePath('config/db.php');
-        $this->db = new Database($config);
+        $this->listings = new Listing();
     }
 
     /**
@@ -18,8 +17,11 @@ class HomeController {
      * @return void
      */
     public function index() {
-        $query = 'SELECT * FROM listings ORDER BY id DESC LIMIT 6';
-        $listings = $this->db->query($query)->fetchAll();
+        $listings = $this->listings->findAll();
+
+        foreach($listings as $listing) {
+            $listing->job_type = $this->listings->jobType($listing->job_type_id);
+        }
 
         loadView('home', [
             'listings' => $listings

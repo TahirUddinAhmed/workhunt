@@ -15,6 +15,15 @@ class Model {
     }
 
     /**
+     * Get the last insert id
+     * 
+     * @return int 
+     */
+    public function getLastInsertId() {
+        return $this->db->conn->lastInsertId();
+    }
+
+    /**
      * Fetch all the data 
      * 
      * @return object

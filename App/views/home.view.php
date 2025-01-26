@@ -15,7 +15,7 @@
               <img class="object-cover w-16 mr-4" src="./images/company-logo/<?= $jobs->company_logo ?>" alt="">
                 <div>
                   <h2 class="text-xl font-semibold mb-1"><?= $jobs->title ?></h2>
-                  <p class="text-gray-600 text-base font-normal"><?= $jobs->job_type ?></p>
+                  <p class="text-gray-600 text-base font-normal"><?= $jobs->job_type->type_name ?? '' ?></p>
                 </div>
               </div>
                 <p class="text-gray-700 text-lg mt-2">

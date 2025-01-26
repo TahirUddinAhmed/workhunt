@@ -2,16 +2,15 @@
 
 namespace App\Controllers;
 
-use Framework\Database;
+use App\Models\User;
 use Framework\Validation;
 use Framework\Session;
 
 class UserController {
-    protected $db;
+    protected $user;
 
     public function __construct() {
-        $config = require basePath('config/db.php');
-        $this->db = new Database($config);
+        $this->user = new User();
     }
 
     /**
@@ -79,13 +78,7 @@ class UserController {
         } 
         // before insert the data into database, first check if the user is already there
         // Check if email exists
-        $params = [
-            'email' => $email
-        ];
-
-        $query = 'SELECT * FROM users WHERE email = :email';
-        $user = $this->db->query($query, $params)->fetch();
-        
+        $user = $this->user->findByEmail($email);
         if($user) {
             $errors['email'] = 'That email already exists';
             loadView('users/create', [
@@ -111,11 +104,11 @@ class UserController {
             'password' => password_hash($password, PASSWORD_DEFAULT)
         ];
 
-        $query = 'INSERT INTO users (name, email, city, state, password, role) VALUES (:name, :email, :city, :state, :password, :role);';
-        $this->db->query($query, $params);
+        // Insert user into users table
+        $this->user->insert($params);
 
         // Get New user ID
-        $userId = $this->db->conn->lastInsertId();
+        $userId = $this->user->getLastInsertId();
 
         Session::set('user', [
             'id' => $userId,
@@ -182,10 +175,7 @@ class UserController {
         }
 
         // Check for email 
-        $params = [
-            'email' => $email
-        ];
-        $user = $this->db->query('SELECT * FROM users WHERE email = :email', $params)->fetch();
+        $user = $this->user->findByEmail($email);
 
         if(!$user) {
             $errors['email'] = 'Incorrect crendentials';
@@ -196,10 +186,11 @@ class UserController {
         }
 
         // Check if password is correct 
-        if(!password_verify($password, $user->password)) {
+        if(!$this->user->verifyPassword($password, $user->password)) {
             $errors['password'] = 'Incorrect Password';
             loadView('users/login', [
-                'errors' => $errors
+                'errors' => $errors,
+                'email' => $user->email
             ]);
             exit;
         }
