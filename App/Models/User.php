@@ -5,9 +5,27 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Framework\Model;
+use Framework\Session;
 
 class User extends Model {
     protected $table = "users";
+
+    /**
+     * Get jobseeker associated with this user
+     * 
+     * @return object|bool
+     */
+    public function getJobSeeker() {
+        $jobSeekerId = Session::get('user')['id'];
+
+        $params = [
+            'id' => $jobSeekerId
+        ];
+
+        $query = "SELECT * FROM jobseeker WHERE id = :id";
+
+        return $this->db->query($query, $params)->fetch();
+    }
 
     /**
      * Find a user by email
