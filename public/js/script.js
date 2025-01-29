@@ -29,5 +29,5 @@ upload_resume.addEventListener("change", function(event) {
   }
 
   showFileInfo.style.color = "green";
-  showFileInfo.textContent = file.name;
+  showFileInfo.textContent = "Selected file: " + file.name;
 });

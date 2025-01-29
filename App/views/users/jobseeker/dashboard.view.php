@@ -14,36 +14,43 @@
                     <?= $user->name ?? '' ?>
                 </h3>
                 <!-- Location -->
-                <div class="flex justify-center items-center text-gray-600 text-sm mb-4">
-                    <i class="fa-solid fa-location-dot mr-2"></i>
+                <div class="flex justify-center items-center text-gray-600 text-sm mb-2">
+                    <i class="fa-solid fa-location-dot text-blue-900 mr-2"></i>
                     <span><?= $user->city ?? '' ?>, <?= $user->state ?? '' ?></span>
-                </div>
-                <!-- Email -->
-                <div class="text-center text-gray-700 text-md mb-2">
-                    <i class="fa-regular fa-envelope mr-2"></i>
-                    <span><?= $user->email ?? '' ?></span>
                 </div>
                 <!-- Contact -->
                 <?php if (!empty($jobseeker->contact)): ?>
-                    <div class="text-center text-gray-700 text-md mb-6">
-                        <i class="fa-solid fa-phone"></i>
+                    <div class="text-center text-gray-700 text-md mb-2">
+                        <i class="fa-solid fa-phone text-blue-900 mr-2"></i>
                         <span><?= $jobseeker->contact ?? '' ?></span>
                     </div>
                 <?php endif; ?>
+                <!-- Email -->
+                <div class="text-center text-gray-700 text-md mb-6">
+                    <i class="fa-regular fa-envelope text-blue-900 mr-2"></i>
+                    <span><?= $user->email ?? '' ?></span>
+                </div>
+                
                 <!-- Qualification Section -->
 
                 <?php if (!empty($jobseeker->qualification)) : ?>
                     <div class="mb-6">
-                        <h4 class="text-lg font-bold mb-2 text-gray-800">Qualification</h4>
+                        <div class="flex items-center mb-2">
+                            <i class="fa-solid fa-graduation-cap text-blue-900 text-lg mr-3"></i>
+                            <h4 class="text-lg font-bold text-gray-800">Qualification</h4>
+                        </div>
                         <p class="text-gray-600"><?= $jobseeker->qualification ?></p>
                     </div>
                 <?php endif; ?>
                 <!-- Skills Section -->
-                <?php if (!empty($jobseeker->skills)): ?>
+                <?php if (!empty($jobseeker->arraySkills)): ?>
                     <div class="mb-6">
-                        <h4 class="text-lg font-bold mb-2 text-gray-800">Skills</h4>
+                        <div class="flex items-center mb-2">
+                            <i class="fa-solid fa-lightbulb text-blue-900 text-lg mr-3"></i>
+                            <h4 class="text-lg font-bold text-gray-800">Skills</h4>
+                        </div>
                         <ul class="list-disc pl-5 text-gray-600">
-                            <?php foreach ($jobseeker->skills as $skill) : ?>
+                            <?php foreach ($jobseeker->arraySkills as $skill) : ?>
                                 <li><?= $skill ?></li>
                             <?php endforeach; ?>
                         </ul>
@@ -52,10 +59,26 @@
                 <!-- Experience Section -->
                 <?php if (!empty($jobseeker->experience)): ?>
                     <div>
-                        <h4 class="text-lg font-bold mb-2 text-gray-800">Experience</h4>
+                        <div class="flex items-center mb-2">
+                            <i class="fa-solid fa-briefcase text-blue-900 text-lg mr-3"></i>
+                            <h4 class="text-lg font-bold text-gray-800">Experience</h4>
+                        </div>
                         <p class="text-gray-600"><?= $jobseeker->experience ?></p>
                     </div>
                 <?php endif; ?>
+                <!-- Resume view  -->
+                <div class="mb-4">
+                    <div class="flex items-center mb-2">
+                        <i class="fa-solid fa-file text-blue-900 text-lg mr-3"></i>
+                        <h4 class="text-lg font-bold text-gray-800">Resume</h4>
+                    </div>
+                     <div class="flex justify-start">
+                        <button class="flex items-center bg-blue-900 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-800">
+                            <i class="fa-solid fa-eye mr-2"></i>
+                            View Resume
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -66,7 +89,7 @@
         <div class="bg-white p-8 rounded-lg shadow-md w-full">
             <form
                 method="POST"
-                action="/jobs"
+                action="/users/jobseeker/profile"
                 enctype="multipart/form-data">
                 <div class="mb-4">
                     <label class="block text-gray-700" for="name">Name</label>
@@ -74,7 +97,7 @@
                         id="name"
                         type="text"
                         name="name"
-                        value="John Doe"
+                        value="<?= $user->name ?? '' ?>"
                         class="w-full px-4 py-2 border rounded focus:outline-none" />
                 </div>
                 <div class="mb-4">
@@ -83,7 +106,7 @@
                         id="email"
                         type="text"
                         name="email"
-                        value="john@gmail.com"
+                        value="<?= $user->email ?? '' ?>"
                         class="w-full px-4 py-2 border rounded focus:outline-none" />
                 </div>
                 <div class="mb-4">
@@ -92,7 +115,7 @@
                         id="contact"
                         type="phone"
                         name="contact"
-                        value=""
+                        value="<?= $jobseeker->contact ?? '' ?>"
                         class="w-full px-4 py-2 border rounded focus:outline-none" 
                         placeholder="Mobile"/>
                 </div>
@@ -102,7 +125,7 @@
                         id="qualification"
                         type="text"
                         name="qualification"
-                        value=""
+                        value="<?= $jobseeker->qualification ?? '' ?>"
                         class="w-full px-4 py-2 border rounded focus:outline-none" 
                         placeholder="BCA, BE, BTech"/>
                 </div>
@@ -112,34 +135,34 @@
                         id="skills"
                         type="text"
                         name="skills"
-                        value=""
+                        value="<?= $jobseeker->skills ?? '' ?>"
                         placeholder="Web development (HTMP, CSS, Javacript), React etc"
                         class="w-full px-4 py-2 border rounded focus:outline-none" />
                 </div>
                 <div class="mb-4">
-                    <label class="block text-gray-700" for="email">City</label>
+                    <label class="block text-gray-700" for="city">City</label>
                     <input
                         id="city"
                         type="text"
                         name="city"
-                        value=""
+                        value="<?= $user->city ?? '' ?>"
                         class="w-full px-4 py-2 border rounded focus:outline-none" 
                         placeholder="e.g, Guwahati"/>
                 </div>
                 <div class="mb-4">
-                    <label class="block text-gray-700" for="email">State</label>
+                    <label class="block text-gray-700" for="state">State</label>
                     <input
                         id="state"
                         type="text"
                         name="state"
-                        value=""
+                        value="<?= $user->state ?? '' ?>"
                         class="w-full px-4 py-2 border rounded focus:outline-none" 
                         placeholder="e.g, Assam"/>
                 </div>
                 <!-- Upload resume -->
                 <div class="col-span-full">
                 <label for="resume" class="block text-gray-700">Upload Resume</label>
-                <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+                <div class="mt-2 flex justify-center rounded-lg border border-dashed <?= isset($errors['resume_size']) ? 'border-red-400' : 'border-gray-900/25' ?>  px-6 py-10">
                   <div class="text-center d-flex justify-items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-11 mb-2 fill-gray-500" viewBox="0 0 32 32">
                       <path
@@ -157,8 +180,10 @@
                       <p class="show-file-info text-sm/5 text-gray-800 mb-4"></p>
                     </div>  
                     <p class="text-xs/5 text-gray-600">only PDF size up to 3MB</p>
-                  </div>
+                    </div>
                 </div>
+                <p class="text-xs/5 text-red-500"><?= $errors['resume_size'] ?? '' ?></p>
+
               </div>
                 <!-- !Upload resume -->
                 <button

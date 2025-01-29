@@ -22,4 +22,16 @@ class JobSeeker extends Model {
 
         return $this->db->query($query, $params)->fetch();
     }
+
+    /**
+     * Check if a user exists in the job seeker table 
+     * 
+     * @param int $userId
+     * @return bool
+     */
+    public function isJobseeker($userId) {
+        $jobSeekerCount = $this->withCount($userId);
+
+        return $jobSeekerCount > 0;
+    }
 }

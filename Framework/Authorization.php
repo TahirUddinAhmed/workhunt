@@ -2,6 +2,7 @@
 
 namespace Framework;
 use Framework\Session;
+use App\Models\JobSeeker;
 
 class Authorization {
     /**
@@ -28,14 +29,17 @@ class Authorization {
      */
     public static function isJobSeeker() {
         // get the role 
-        $sessionUserRole = Session::get('user')['role'] ?? '';
+        $sessionUser = Session::get('user') ?? '';
 
-        if($sessionUserRole == null || $sessionUserRole === '') {
+        if($sessionUser['role'] == null || $sessionUser['role'] === '') {
             return false;
         }
 
-        if($sessionUserRole == 'job_seeker') {
-            return true;
+        if($sessionUser['role'] == 'job_seeker') {
+            $userId = (int) $sessionUser['id'];
+            $jobSeekerModel = new JobSeeker();
+
+            return $jobSeekerModel->isJobSeeker($userId);
         }
             
 

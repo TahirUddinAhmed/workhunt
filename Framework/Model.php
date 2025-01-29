@@ -48,6 +48,18 @@ class Model {
     }
 
     /**
+     * Count number of records in a table
+     *
+     * @param int $id
+     * @return object|bool
+     */
+    public function withCount($id) {
+        $params = [
+            'id' => $id
+        ];
+        return $this->db->query("SELECT * FROM {$this->table} WHERE id = :id", $params)->fetchColumn();
+    }
+    /**
      * Insert record into database table
      * 
      * @param array $data (associative array with key and value)
