@@ -152,4 +152,33 @@ class JobSeekerController {
 
         redirect('/users/jobseeker/dashboard');
     }
+
+
+    /**
+     * Download resume 
+     * 
+     * @return void
+     */
+    public function downloadResume() {
+        $jobSeeker = $this->user->getJobSeeker();
+        
+        $resumePath = basePath("public/uploads/resumes/{$jobSeeker->resume}");
+
+        if(!file_exists($resumePath)) {
+            Session::set('error_message', 'Resume not found may be you delete it.');
+            redirect('/users/jobseeker/dashboard');
+        }
+
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($resumePath) . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($resumePath));
+        readfile($resumePath);
+
+        exit;
+
+    }
 }

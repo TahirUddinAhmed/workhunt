@@ -10,7 +10,7 @@
             </h3>
             <div class="bg-gray-100 p-6 rounded-xl shadow-sm">
                 <!-- Name -->
-                <h3 class="text-2xl font-semibold text-center mb-4 text-gray-900">
+                <h3 class="text-3xl font-semibold text-center mb-4 text-gray-900">
                     <?= $user->name ?? '' ?>
                 </h3>
                 <!-- Location -->
@@ -67,18 +67,22 @@
                     </div>
                 <?php endif; ?>
                 <!-- Resume view  -->
+                 <?php if(!empty($jobseeker->resume)): ?>
                 <div class="mb-4">
                     <div class="flex items-center mb-2">
                         <i class="fa-solid fa-file text-blue-900 text-lg mr-3"></i>
                         <h4 class="text-lg font-bold text-gray-800">Resume</h4>
                     </div>
                      <div class="flex justify-start">
+                        <a href="/users/jobseeker/dashboard/download-resume">
                         <button class="flex items-center bg-blue-900 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-800">
                             <i class="fa-solid fa-eye mr-2"></i>
                             View Resume
                         </button>
+                        </a>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
 

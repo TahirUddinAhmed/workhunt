@@ -8,6 +8,7 @@ $router->get('/listings/{id}', 'ListingController@show');
 $router->get('listing/search', 'ListingController@search');
 $router->get('/listings/apply/{id}', 'ListingController@apply', ['auth']);
 $router->get('/users/jobseeker/dashboard', 'JobSeekerController@dashboard', ['auth']);
+$router->get('/users/jobseeker/dashboard/download-resume', 'JobSeekerController@downloadResume', ['auth']);
 // Form Submission
 $router->post('/listings', 'ListingController@store');
 $router->put('/listings/{id}', 'ListingController@update', ['auth']);
