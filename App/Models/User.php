@@ -28,6 +28,23 @@ class User extends Model {
     }
 
     /**
+     * Get employer associated with this user 
+     * 
+     * @return object|bool
+     */
+    public function getEmployer() {
+        $employerId = (int) Session::get('user')['id'];
+
+        $params = [
+            'id' => $employerId
+        ];
+
+        $query = "SELECT * FROM employer WHERE id = :id";
+
+        return $this->db->query($query, $params)->fetch();
+    }
+
+    /**
      * Find a user by email
      * 
      * @param string $email

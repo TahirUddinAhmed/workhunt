@@ -1,6 +1,8 @@
 <?php 
 
 namespace Framework;
+
+use App\Models\Employer;
 use Framework\Session;
 use App\Models\JobSeeker;
 
@@ -23,12 +25,12 @@ class Authorization {
     }
 
     /**
-     * Check if your can apply for job or not 
+     * Check if a user is job seeker or not 
      * 
      * @return bool
      */
     public static function isJobSeeker() {
-        // get the role 
+        // get the user 
         $sessionUser = Session::get('user') ?? '';
 
         if($sessionUser['role'] == null || $sessionUser['role'] === '') {
@@ -44,5 +46,23 @@ class Authorization {
             
 
         return false;
+    }
+
+    /**
+     * Check if user is employer or not 
+     * 
+     * @return bool
+     */
+    public static function isEmployer() {
+        // get the user 
+        $sessionUser = Session::get('user') ?? '';
+
+        if($sessionUser['role'] !== 'employer' && $sessionUser['role'] === '') {
+            return false;
+        }
+
+        $userId = (int) $sessionUser['id'];
+        $employer = new Employer();
+        return $employer->isEmployer($userId);
     }
 }

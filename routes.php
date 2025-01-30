@@ -9,6 +9,7 @@ $router->get('listing/search', 'ListingController@search');
 $router->get('/listings/apply/{id}', 'ListingController@apply', ['auth']);
 $router->get('/users/jobseeker/dashboard', 'JobSeekerController@dashboard', ['auth']);
 $router->get('/users/jobseeker/dashboard/download-resume', 'JobSeekerController@downloadResume', ['auth']);
+$router->get('/users/employer/dashboard', 'EmployerController@index', ['auth']);
 // Form Submission
 $router->post('/listings', 'ListingController@store');
 $router->put('/listings/{id}', 'ListingController@update', ['auth']);
@@ -22,3 +23,5 @@ $router->post('/auth/register', 'UserController@store', ['guest']);
 $router->post('/auth/logout', 'UserController@logout', ['auth']);
 $router->post('/auth/login', 'UserController@authenticate', ['guest']);
 $router->post('/users/jobseeker/profile', 'JobSeekerController@update', ['auth']);
+$router->post('/users/employer/dashboard/update-company', 'EmployerController@companyUpdate', ['auth']);
+$router->post('/users/employer/dashboard/update-profile', 'EmployerController@Update', ['auth']);

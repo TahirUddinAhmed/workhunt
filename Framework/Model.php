@@ -57,7 +57,29 @@ class Model {
         $params = [
             'id' => $id
         ];
-        return $this->db->query("SELECT * FROM {$this->table} WHERE id = :id", $params)->fetchColumn();
+        return $this->db->query("SELECT COUNT(*) FROM {$this->table} WHERE id = :id", $params)->fetchColumn();
+    }
+    /**
+     * Count number of records in a table
+     *
+     * @param array $id (associative)
+     * @return string $table
+     * @return object|bool
+     */
+    public function getCount($params, $table) {
+        
+        $fields = [];
+
+        foreach($params as $field => $value) {
+            $fields[] = "{$field} = :{$field}";
+        }
+
+        // convert array to string 
+        $fields = implode("", $fields);
+
+        // inspectAndDie($params);
+
+        return $this->db->query("SELECT COUNT(*) FROM {$table} WHERE {$fields}", $params)->fetchColumn();
     }
     /**
      * Insert record into database table

@@ -357,6 +357,15 @@ class ListingController {
 
         $listing->job_type = $this->listings->jobType($listing->job_type_id);
 
+        // inspect($listing->requirements);
+        if(!empty($listing->requirements)) {
+            // convert the coma separated string into an array
+            // Use preg_split to match commas outside parentheses
+            $listing->requirements = preg_split('/,(?![^()]*\))/', $listing->requirements);
+
+            // Trim any whitespace around the skills
+            $listing->requirements = array_map('trim', $listing->requirements);
+        }
         // Only job seekers can apply for job
         if(!Authorization::isJobSeeker()) {
             Session::setFlashMessage('error_message', 'Only Job Seeker can apply for jobs');

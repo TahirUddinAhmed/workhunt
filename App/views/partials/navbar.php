@@ -5,7 +5,7 @@ use Framework\Session;
 
 ?>
     <!-- Nav -->
-    <header class="bg-blue-900 text-white p-4">
+    <header class="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4">
       <div class="container mx-auto flex justify-between items-center">
         <h1 class="text-3xl font-semibold">
           <a href="/">Work Hunt</a>
@@ -21,13 +21,19 @@ use Framework\Session;
               </form>
               <?php if(!Authorization::isJobSeeker()) : ?>
               <a
+                href="/users/employer/dashboard"
+                class="hover:underline py-2 font-bold text-yellow-500"
+              >
+              <i class="fa fa-gauge mr-1"></i> Dashboard
+              </a>
+              <a
                 href="/listings/create"
                 class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded hover:shadow-md transition duration-300"
                 ><i class="fa fa-edit"></i> Post a Job</a>
               <?php else : ?>
                 <a
                 href="/users/jobseeker/dashboard"
-                class="bg-green-500 hover:bg-green-600 text-black px-4 py-2 rounded hover:shadow-md transition duration-300"
+                class="hover:underline py-2 font-bold text-yellow-500"
                 > Profile</a>
               <?php endif; ?>
             </div>
