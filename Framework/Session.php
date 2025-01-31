@@ -90,7 +90,7 @@ class Session {
         $message = self::get('flash_' . $key, $default);
 
         self::clear('flash_' . $key);
-
+        
         return $message;
     }
 }

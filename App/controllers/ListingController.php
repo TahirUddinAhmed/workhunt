@@ -182,7 +182,7 @@ class ListingController {
                         
 
                         // message 
-                        Session::set('success_message', 'Listing created successfully');
+                        Session::setFlashMessage('success_message', 'Listing created successfully');
 
                         redirect('/listings');
                     }
@@ -237,7 +237,7 @@ class ListingController {
 
         // Set flash message 
         // $_SESSION['success_message'] = 'Listing deleted successfully';
-        Session::set('success_message', 'Listing deleted successfully');
+        Session::setFlashMessage('success_message', 'Listing deleted successfully');
 
         redirect('/listings');
 
@@ -369,7 +369,7 @@ class ListingController {
         // Only job seekers can apply for job
         if(!Authorization::isJobSeeker()) {
             Session::setFlashMessage('error_message', 'Only Job Seeker can apply for jobs');
-            return redirect('/listings');
+            redirect('/listings');
         }
         
         loadView('/listings/apply', [

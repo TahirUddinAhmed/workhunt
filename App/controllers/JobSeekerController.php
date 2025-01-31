@@ -148,7 +148,7 @@ class JobSeekerController {
         $this->jobseeker->update($jobSeekerId, $jobSeekerData);
 
         // message 
-        Session::set('success_message', 'User Profile Updated');
+        Session::setFlashMessage('success_message', 'User Profile Updated');
 
         redirect('/users/jobseeker/dashboard');
     }

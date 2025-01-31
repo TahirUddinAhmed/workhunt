@@ -2,6 +2,7 @@
 <?php loadPartial('navbar'); ?>
 
 <main class="container mx-auto p-4 mt-4">
+    <?php loadPartial('message') ?>
     <section class="flex flex-col md:flex-row gap-6">
         <!-- Profile Info -->
         <div class="bg-white p-8 rounded-2xl shadow-md w-full md:w-2/3 mx-auto">

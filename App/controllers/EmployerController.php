@@ -77,7 +77,7 @@ class EmployerController {
             ];
             $this->user->update($userId, $data);
 
-            Session::set('success_message', 'Profile updated successfully');
+            Session::setFlashMessage('success_message', 'Profile updated successfully');
 
             redirect('/users/employer/dashboard');
         }
@@ -126,7 +126,7 @@ class EmployerController {
         $userId = (int) Session::get('user')['id'];
         $this->employer->update($userId, $updateValues);
 
-        Session::set('success_message', 'Company information updated successfully');
+        Session::setFlashMessage('success_message', 'Company information updated successfully');
 
         redirect('/users/employer/dashboard');
     }

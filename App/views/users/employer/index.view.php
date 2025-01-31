@@ -1,6 +1,4 @@
 <?php loadPartial('head'); ?>
-<?php use Framework\Session; ?>
-<?// inspectAndDie($employer) ?>
 <main class="container mx-auto px-4 mt-8">
         <!-- Dashboard Header -->
         <div class="mb-8">
@@ -62,6 +60,7 @@
             </div>
         </div>
         <!-- Main Content -->
+        <?php loadPartial('message') ?>
         <div class="flex flex-col lg:flex-row gap-8">
             <!-- Profile Section -->
             <div class="w-full lg:w-1/3">
