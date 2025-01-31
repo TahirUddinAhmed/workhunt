@@ -11,7 +11,7 @@
                 <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">
                     <?= $listing->job_type->type_name ?? '' ?>
                 </span>
-                <span class="text-gray-500 text-sm">Posted 2d ago</span>
+                <span class="text-gray-500 text-sm"><?= "Posted " . get_time_ago($listing->created_at) ?></span>
               </div>
               <h2 class="text-2xl font-bold text-gray-900 mb-2"><?= $listing->title ?></h2>
               <div class="flex items-center text-sm space-x-4 text-gray-600">
@@ -44,7 +44,8 @@
               <div class="bg-gray-50 p-4 rounded-lg">
                 <h3 class="font-semibold text-gray-900 mb-2">Key Requirements</h3>
                 <ul class="list-disc list-inside space-y-2 text-sm text-gray-700">
-                <?php foreach($listing->requirements as $requirement) : ?>  
+                <?php $requirementsArr = strToArr($listing->requirements) ?>
+                <?php foreach($requirementsArr as $requirement) : ?>  
                 <li><?= $requirement ?></li>
                 <?php endforeach; ?>
                 </ul>
@@ -59,8 +60,8 @@
               <h1 class="text-3xl font-bold text-gray-900 mb-2">Application Form</h1>
               <p class="text-gray-500">Complete this form to apply for the position</p>
             </div>
-        
-            <form class="space-y-6">
+
+            <form method="POST" action="/listings/apply/<?= $listing->id ?>" class="space-y-6" enctype="multipart/form-data">
               <!-- Personal Information -->
               <div class="grid md:grid-cols-2 gap-6">
                 <div>
@@ -70,60 +71,70 @@
                   <div class="relative">
                     <input 
                       type="text" 
-                      class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      name="name"
+                      class="w-full pl-10 pr-4 py-3 border <?= isset($errors['name']) ? 'border-red-400' : 'border-gray-300' ?> rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       placeholder="John Doe"
-                      required
+                      value="<?= $user->name ?? '' ?>"
                     >
                     <i class="fas fa-user absolute left-3 top-3.5 text-gray-400"></i>
                   </div>
+                  <span class="text-red-500"><?= $errors['name'] ?? '' ?></span>
                 </div>
         
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Email <span class="text-red-500">*</span>
+                    Qualification <span class="text-red-500">*</span>
                   </label>
                   <div class="relative">
                     <input 
-                      type="email" 
-                      class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      type="text" 
+                      name="qualification"
+                      class="w-full pl-10 pr-4 py-3 border  <?= isset($errors['qualification']) ? 'border-red-400' : 'border-gray-300' ?> rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       placeholder="john@example.com"
-                      required
+                      value="<?= $job_seeker->qualification ?? '' ?>"
                     >
-                    <i class="fas fa-envelope absolute left-3 top-3.5 text-gray-400"></i>
+                    <i class="fa-solid fa-briefcase absolute text-blue-900 left-3 top-3.5 text-gray-400"></i>
                   </div>
+                  <span class="text-red-500"><?= $errors['qualification'] ?? '' ?></span>
                 </div>
               </div>
-        
-              <!-- Professional Links -->
+
+              <!-- Experience & contact -->
               <div class="grid md:grid-cols-2 gap-6">
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-2">
-                    LinkedIn Profile
+                    Years of Experience <span class="text-red-500">*</span>
                   </label>
-                  <div class="relative">
-                    <input 
-                      type="url" 
-                      class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="https://linkedin.com/in/username"
-                    >
-                    <i class="fab fa-linkedin absolute left-3 top-3.5 text-gray-400"></i>
-                  </div>
+                  <select class="w-full px-4 py-3 border <?= isset($errors['years_of_exp']) ? 'border-red-400' : 'border-gray-300' ?>  rounded-lg focus:ring-2 focus:ring-purple-500" name="years_of_exp">
+                    <option value="" selected>Select experience</option>
+                    <option value="0-1 years">0-1 years</option>
+                    <option value="2-4 years">2-4 years</option>
+                    <option value="5-7 years">5-7 years</option>
+                    <option value="8+ years">8+ years</option>
+                  </select>
+                  <span class="text-red-500"><?= $errors['years_of_exp'] ?? '' ?></span>
                 </div>
         
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Portfolio/GitHub
+                  <label for="contact" class="block text-sm font-medium text-gray-700 mb-2">
+                    Contact <span class="text-red-500">*</span>
                   </label>
                   <div class="relative">
                     <input 
-                      type="url" 
-                      class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="https://github.com/username"
+                      type="contact" 
+                      name="contact"
+                      class="w-full pl-10 pr-4 py-3 border <?= isset($errors['contact']) ? 'border-red-400' : 'border-gray-300' ?> rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      placeholder="john@example.com"
+                      value="<?= $job_seeker->contact ?? '' ?>"
                     >
-                    <i class="fas fa-link absolute left-3 top-3.5 text-gray-400"></i>
+                    <i class="fas fa-envelope absolute left-3 top-3.5 text-gray-400"></i>
                   </div>
+                  <span class="text-red-500"><?= $errors['contact'] ?? '' ?></span>
                 </div>
+
               </div>
+        
+              
         
               <!-- Resume Upload Section -->
               <div>
@@ -131,70 +142,76 @@
                   Resume <span class="text-red-500">*</span>
                 </label>
                 
+                <?php if(!empty($job_seeker->resume)) : ?>
                 <!-- Existing Resume -->
                 <div class="mb-4 bg-green-50 border border-green-200 rounded-lg p-4">
                   <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-3">
                       <i class="fas fa-file-pdf text-green-600 text-lg"></i>
                       <div>
-                        <p class="text-sm font-medium text-gray-900">John_Doe_Resume.pdf</p>
-                        <p class="text-xs text-gray-500">Uploaded: 2 hours ago</p>
+                        <p class="text-sm font-medium text-gray-900"><?= $job_seeker->resume ?></p>
+                        <p class="text-xs text-gray-500">Uploaded: <?= get_time_ago($job_seeker->created_at) ?></p>
                       </div>
                     </div>
-                    <button type="button" class="text-red-600 hover:text-red-700 text-sm">
+                    <!-- <button type="button" class="text-red-600 hover:text-red-700 text-sm">
                       Remove
-                    </button>
+                    </button> -->
                   </div>
                 </div>
-        
+                <?php endif; ?>
+                  
                 <!-- New Upload Area -->
-                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-500 transition-colors cursor-pointer">
+                <div class="border-2 border-dashed <?= isset($errors['resume_size']) ? 'border-red-400' : 'border-gray-300' ?> rounded-lg p-6 text-center hover:border-green-500 transition-colors cursor-pointer">
                   <div class="mb-2 text-gray-600">
                     <i class="fas fa-cloud-upload-alt text-3xl"></i>
                   </div>
-                  <p class="text-sm text-gray-600">
-                    Drag & drop files here or 
-                    <span class="text-green-600 hover:underline">browse files</span>
-                  </p>
+                  <div class="mt-4 text-sm/6 text-gray-600">
+                      <label for="upload_resume" class="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
+                        <span class="text-green-600 hover:underline">browse files</span>
+                        <input id="upload_resume" name="resume" type="file" class="sr-only">
+                      </label>
+                      <p class="show-file-info text-sm/5 text-gray-800 mb-4"></p>
+                    </div>  
                   <p class="text-xs text-gray-500 mt-2">
-                    PDF, DOC, DOCX (Max 5MB)
+                    <?php if(!empty($errors['resume_size'])) : ?>
+                      <span class="text-red-500"><?= $errors['resume_size']?></span>
+                    <?php else : ?>
+                     PDF (Max 5MB)
+                    <?php endif; ?>
                   </p>
-                  <input 
-                    type="file" 
-                    class="hidden" 
-                    id="resumeUpload" 
-                    accept=".pdf,.doc,.docx"
-                  >
+                  
                   <p class="text-sm text-gray-600 mt-3">
                     Want to update? Select a new file to replace current resume
                   </p>
                 </div>
               </div>
-        
-              <!-- Experience & Cover Letter -->
-              <div class="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Years of Experience <span class="text-red-500">*</span>
+              
+
+              <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2" for="skills">
+                    Skills 
                   </label>
-                  <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
-                    <option>Select experience</option>
-                    <option>0-1 years</option>
-                    <option>2-4 years</option>
-                    <option>5-7 years</option>
-                    <option>8+ years</option>
-                  </select>
-                </div>
-        
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <div class="relative">
+                    <input 
+                      type="text" 
+                      name="skills"
+                      class="w-full pl-10 pr-4 py-3 border <?= isset($errors['skills']) ? 'border-red-400' : 'border-gray-300' ?> rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      placeholder=""
+                      value="<?= $job_seeker->skills ?? '' ?>"
+                    >
+                    <i class="fa-solid fa-lightbulb absolute left-3 top-3.5 text-gray-400"></i>
+                  </div>
+                  <span class="text-red-500"><?= $errors['skills'] ?? '' ?></span>
+              </div>
+              <div>
+                  <label for="conver_letter" class="block text-sm font-medium text-gray-700 mb-2">
                     Cover Letter <span class="text-gray-500">(optional)</span>
                   </label>
                   <textarea 
+                    name="cover_letter"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 h-32"
                     placeholder="Describe your qualifications..."
                   ></textarea>
-                </div>
               </div>
         
               <!-- Terms & Submission -->

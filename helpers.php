@@ -104,3 +104,53 @@ function redirect($url) {
     header("Location: {$url}");
     exit;
 }
+
+/**
+ * Get human readable Date
+ *
+ * @param string $datetime_str
+ * @return string
+ */
+function get_time_ago($datetime_str) {
+    $date = new DateTime($datetime_str);
+    $now = new DateTime();
+    $diff = $now->getTimestamp() - $date->getTimestamp();
+    
+    $total_days = floor($diff / (60 * 60 * 24));
+    
+    if ($total_days >= 365) {
+        $years = floor($total_days / 365);
+        $s = $years != 1 ? 's' : '';
+        return "$years year$s ago";
+    } elseif ($total_days >= 30) {
+        $months = floor($total_days / 30);
+        $s = $months != 1 ? 's' : '';
+        return "$months month$s ago";
+    } elseif ($total_days >= 7) {
+        $weeks = floor($total_days / 7);
+        $s = $weeks != 1 ? 's' : '';
+        return "$weeks week$s ago";
+    } else {
+        $s = $total_days != 1 ? 's' : '';
+        return "$total_days day$s ago";
+    }
+}
+
+/**
+ * Coma separated strings to Array 
+ * 
+ * @param string $data
+ * @return array
+ */
+function strToArr($data) {
+    if(!empty($data)) {
+        // convert the coma separated string into an array
+        // Use preg_split to match commas outside parentheses
+        $data = preg_split('/,(?![^()]*\))/', $data);
+
+        // Trim any whitespace around the skills
+        $data = array_map('trim', $data);
+
+        return $data;
+    }
+}

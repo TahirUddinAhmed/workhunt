@@ -2,21 +2,30 @@
 
 namespace App\Controllers;
 
+use App\Models\JobSeeker;
 use App\Models\JobTypes;
 use Framework\Validation;
 use Framework\Session;
 use Framework\Authorization;
 
 use App\Models\Listing;
+use App\Models\User;
+use App\Models\Application;
 
 class ListingController {
     protected $listings;
     protected $jobTypes;
+    private $jobSeeker;
+    private $user;
+    private $application;
 
     public function __construct()
     {
         $this->listings = new Listing();
         $this->jobTypes = new JobTypes();
+        $this->jobSeeker = new JobSeeker();
+        $this->user = new User();
+        $this->application = new Application();
     }
 
     /**
@@ -357,15 +366,6 @@ class ListingController {
 
         $listing->job_type = $this->listings->jobType($listing->job_type_id);
 
-        // inspect($listing->requirements);
-        if(!empty($listing->requirements)) {
-            // convert the coma separated string into an array
-            // Use preg_split to match commas outside parentheses
-            $listing->requirements = preg_split('/,(?![^()]*\))/', $listing->requirements);
-
-            // Trim any whitespace around the skills
-            $listing->requirements = array_map('trim', $listing->requirements);
-        }
         // Only job seekers can apply for job
         if(!Authorization::isJobSeeker()) {
             Session::setFlashMessage('error_message', 'Only Job Seeker can apply for jobs');
@@ -374,7 +374,139 @@ class ListingController {
         
         loadView('/listings/apply', [
             'listing' => $listing,
-            'job_seeker' => Session::get('user')
+            'job_seeker' => $this->user->getJobSeeker(),
+            'user' => $this->jobSeeker->getUser()
         ]);
+    }
+
+    /**
+     * Submit job application
+     * 
+     * @param array $params 
+     * @return void
+     */
+    public function application($params) {
+        $listing_id = $params['id'];
+
+        $listing = $this->listings->find($listing_id);
+
+        $listing->job_type = $this->listings->jobType($listing->job_type_id);
+
+        // Check if listing exits
+        if(!$listing) {
+            ErrorController::notFound('Listing not found');
+            return;
+        }
+
+        // authorization 
+        if(!Authorization::isJobSeeker()) {
+            Session::setFlashMessage('error_message', 'You are not authorized to access this resource');
+            return redirect('/');
+        }
+        $user = $this->jobSeeker->getUser();
+
+        // form 
+        $allowedFields = ['name', 'qualification', 'years_of_exp', 'contact', 'skills', 'cover_letter'];
+
+        $UpdateValues = array_intersect_key($_POST, array_flip($allowedFields));
+
+        $requiredFields = ['name', 'qualification', 'years_of_exp', 'contact', 'skills'];
+
+        $errors = [];
+
+        foreach($requiredFields as $field) {
+            if(empty($UpdateValues[$field]) && !Validation::string($UpdateValues[$field])) {
+                $errors[$field] = ucfirst($field) . " is required";
+            }
+        }
+
+        if(!empty($errors)) {
+            loadView('/listings/apply', [
+                'errors' => $errors,
+                'listing' => $listing,
+                'job_seeker' => $this->user->getJobSeeker(),
+                'user' => $this->jobSeeker->getUser()
+            ]);
+            exit;
+        }
+        if(isset($_FILES['resume']) && $_FILES['resume']['error'] === 0) {
+            // upload the resume 
+            $UpdateValues['resume'] = $this->uploadResume($_FILES['resume'], $user->email, $listing, ['pdf'], 3); 
+        } else {
+          $UpdateValues['resume'] = $this->user->getJobSeeker()->resume;   
+        }
+
+        // user data 
+        $UsersData = ['name', 'email', 'city', 'state'];
+        $userUpdateValues = array_intersect_key($UpdateValues, array_flip($UsersData));
+        // Update data 
+        $this->user->update($user->id, $userUpdateValues);
+        // Job seeker data 
+        $jobSeeker = $this->user->getJobSeeker();
+        $seekerData = ['contact', 'qualification', 'skills', 'resume', 'experience'];
+        $jobSeekerUpdateValues = array_intersect_key($UpdateValues, array_flip($seekerData));
+        // Update data 
+        $this->jobSeeker->update($jobSeeker->id, $jobSeekerUpdateValues);
+
+        // application data 
+        $applyData = ['listings_id', 'job_seeker_id', 'resume', 'cover_letter'];
+        $applyUpdateValues = array_intersect_key($UpdateValues, array_flip($applyData));
+        $applyUpdateValues['listings_id'] = $listing->id;
+        $applyUpdateValues['job_seeker_id'] = $jobSeeker->id;
+
+        // Insert data into application tabel 
+        $this->application->insert($applyUpdateValues);
+
+
+       // message 
+       Session::set('success_message', 'Congrats, You have applies for a job');
+
+       redirect('/listings');
+    }
+
+    /**
+     * upload Resume 
+     * 
+     * @param object $fileObj
+     * @param array $allowed_ext 
+     * @param string $filename
+     * @param int $maxSize
+     * @return void
+     */
+    public function uploadResume($fileObj,  $filename, $listings, $allowed_ext = ['pdf'], $maxSize = '1', ) {
+        $resume_name = $fileObj['name'];
+        $resume_size = $fileObj['size'];
+        $resume_temp = $fileObj['tmp_name'];
+
+        $ext = pathinfo($resume_name, PATHINFO_EXTENSION);
+            if(!in_array($ext, $allowed_ext)) {
+                $errors['resume'] = "Only PDF are allowed";
+            } else {
+
+                // size 
+                $maxSize = 3 * 1024 * 1024;
+
+                if($resume_size > $maxSize) {
+                    $errors['resume_size'] = "File size exceeds 3MB";
+                    loadView('/listings/apply', [
+                        'errors' => $errors,
+                        'listing' => $listings,
+                        'job_seeker' => $this->user->getJobSeeker(),
+                        'user' => $this->jobSeeker->getUser()
+                    ]);
+                    exit;
+                }
+                // inspectAndDie($errors);
+                $resume = 'workhunt-' . $filename . '-resume' . '.' .$ext;
+                $target_dir = basePath("public/uploads/resumes/");
+                if(!is_dir($target_dir)) {
+                    mkdir($target_dir, 0755, true);
+                }
+                $target_path = $target_dir . $resume;
+                move_uploaded_file($resume_temp, $target_path);
+
+                return $resume;
+            }
+
     }
 }
