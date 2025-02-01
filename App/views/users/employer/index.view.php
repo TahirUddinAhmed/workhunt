@@ -77,9 +77,10 @@
                         <h3 class="text-xl font-bold text-gray-800"><?= $user->name ?></h3>
                         <p class="text-gray-500">Recruiter</p>
                     </div>
-
-                    <form method="POST" action="/users/employer/dashboard/update-profile" class="space-y-4">
+                    <span class="text-red-500 mt-2 mb-3"><?= $errors['email-found'] ?? '' ?></span>
+                    <form method="POST" action="/users/employer/dashboard/<?= $user->id ?>" class="space-y-4">
                         <div>
+                            <input type="hidden" name="_method" value="PUT">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                             <div class="relative">
                                 <input 

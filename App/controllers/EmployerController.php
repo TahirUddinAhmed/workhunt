@@ -24,6 +24,20 @@ class EmployerController {
     }
 
     /**
+     * Get Employer data 
+     * 
+     * @param mixed $user
+     * @return object|null
+     */
+    public function EmployerData($user) {
+        $user->listings_count = $this->employer->countJobs(Session::get('user')['id']);
+
+        $user->application_count = $this->employer->countApplication();
+
+        return $user;
+    }
+
+    /**
      * Load the dashboard 
      * 
      * @return void
@@ -32,10 +46,8 @@ class EmployerController {
         $user = $this->employer->getUser();
         $employer = $this->user->getEmployer();
 
-        $user->listings_count = $this->employer->countJobs(Session::get('user')['id']);
-
-        $user->application_count = $this->employer->countApplication();
-
+        
+        $user = $this->EmployerData($user);
     
         loadView('users/employer/index', [
             'user' => $user,
@@ -46,9 +58,19 @@ class EmployerController {
     /**
      * Update users profile 
      * 
+     * @param array $params
      * @return void
      */
-    public function update() {
+    public function update($params) {
+        $userId = $params['id'];
+
+        $user = $this->user->find($userId);
+
+        if(!$user) {
+            ErrorController::notFound('Unauthorized users, please log in to our account');
+            return;
+        }
+
         $name = sanitize($_POST['name']);
         $email = sanitize($_POST['email']);
 
@@ -62,10 +84,20 @@ class EmployerController {
             $errors['name'] = 'Name must be between 2 and 50 character';
         }
 
+        // check if user email 
+        if($user->email !== $email) {
+            // check if user entered email if exists in the database
+            $checkEmail = $this->user->findByEmail($email);
+            if($checkEmail) {
+                $errors['email-found'] = "Can't update, {$email} is already exits";
+            }
+        }
+
+        $user = $this->EmployerData($user);
         if(!empty($errors)) {
             loadView('users/employer/index', [
                 'errors' => $errors,
-                'user' => $this->employer->getUser(),
+                'user' => $user,
                 'employer' => $this->user->getEmployer()
             ]);
             exit;

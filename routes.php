@@ -24,6 +24,6 @@ $router->post('/auth/logout', 'UserController@logout', ['auth']);
 $router->post('/auth/login', 'UserController@authenticate', ['guest']);
 $router->post('/users/jobseeker/profile', 'JobSeekerController@update', ['auth']);
 $router->post('/users/employer/dashboard/update-company', 'EmployerController@companyUpdate', ['auth']);
-$router->post('/users/employer/dashboard/update-profile', 'EmployerController@Update', ['auth']);
+$router->put('/users/employer/dashboard/{id}', 'EmployerController@update', ['auth']);
 // Application submit 
 $router->post('/listings/apply/{id}', 'ListingController@application', ['auth']);
