@@ -165,7 +165,7 @@ class JobSeekerController {
         $resumePath = basePath("public/uploads/resumes/{$jobSeeker->resume}");
 
         if(!file_exists($resumePath)) {
-            Session::set('error_message', 'Resume not found may be you delete it.');
+            Session::setFlashMessage('error_message', 'Resume not found may be you delete it.');
             redirect('/users/jobseeker/dashboard');
         }
 

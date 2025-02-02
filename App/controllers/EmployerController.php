@@ -70,19 +70,36 @@ class EmployerController {
         $user = $this->employer->getUser();
         $employer = $this->user->getEmployer();
 
-        $listings = $this->employer->getListings();
+        $applications = $this->application->getApplications();
 
-        $applicationData = [];
+        // $test = $this->application->test();
 
-        foreach($listings as $listing) {
-            $applicationData[] = $this->application->getApplication($listing->id);
-        }
+        // inspect($test);
 
         // inspect($applicationData);
        loadView('/users/employer/application', [
             'user' => $user,
             'employer' => $employer,
-            'applications' => $applicationData
+            'applications' => $applications
+       ]);
+    }
+
+    /**
+     * Filter application
+     */
+    public function filter() {
+        $user = $this->employer->getUser();
+        $filter = isset($_GET['status']) ? trim($_GET['status']) : '';
+
+        if(!empty($filter)) {
+            $applications = $this->application->filterByStatus($filter);
+        } else {
+            $applications = $this->application->getApplications();
+        }
+
+        loadView('/users/employer/application', [ 
+            'user' => $user,
+            'applications' => $applications
        ]);
     }
 
@@ -247,27 +264,19 @@ class EmployerController {
      * @return void
      */
     public function updateStatus($params) {
-
+        // inspectAndDie($params);
         $application_id = $params['id'];
 
+        // inspectAndDie($application_id);
         $application = $this->application->find($application_id);
 
+        // inspectAndDie($application);
         if(!$application) {
             ErrorController::notFound('resourse not found');
             return;
         }
 
-        $user = $this->employer->getUser();
-        $employer = $this->user->getEmployer();
-
-        $listings = $this->employer->getListings();
-
-        $applicationData = [];
-
-        foreach($listings as $listing) {
-            $applicationData[] = $this->application->getApplication($listing->id);
-        }
-
+        
 
         $allowedFields = ['status'];
 
@@ -289,22 +298,63 @@ class EmployerController {
         if(!in_array($updateValues['status'], $requiredValues)) {
             $errors['reject'] = "Don't try to change value, try again";
         }
+        inspectAndDie($updateValues);
+        $user = $this->employer->getUser();
+        $employer = $this->user->getEmployer();
+
+        $applicationsData = $this->application->getApplications();
+
 
         if(!empty($errors)) {
             loadView('/users/employer/application', [
                 'errors' => $errors,
                 'user' => $user,
                 'employer' => $employer,
-                'applications' => $applicationData
+                'applications' => $applicationsData
            ]);
            exit;
         } 
 
-        $this->application->update($application->id, $updateValues);
+        $this->application->update($application->application_id, $updateValues);
 
         Session::setFlashMessage('success_message', 'Application status updated successfully');
 
         redirect('/users/employer/dashboard/applications');
 
+    }
+
+    /**
+     * Download Resume 
+     * 
+     * @param array $params
+     * @return void
+     */
+    public function downloadResume($params) {
+        $id = $params['id'];
+
+        $application = $this->application->find($id);
+
+        if(!$application) {
+            ErrorController::notFound();
+            return;
+        }
+
+        $resumePath = basePath("public/uploads/resumes/{$application->resume}");
+
+        if(!file_exists($resumePath)) {
+            Session::setFlashMessage('error_message', 'Resume not found');
+            redirect('/users/employer/dashboard/applications');
+        }
+
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($resumePath) . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($resumePath));
+        readfile($resumePath);
+
+        exit;
     }
 }

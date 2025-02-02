@@ -31,43 +31,76 @@ class Application extends Model {
     }
 
     /**
-     * Get the listings associated with this application
-     * 
-     * @param int $listingId
-     * @return object|null
+     * Filter by field
+     *
+     * @param string $status
+     * @return void
      */
-    public function getApplication($listingId) {
-        $query = "SELECT * FROM applications WHERE listings_id = :listings_id";
+    public function filterByStatus($status) {
+        $userId = Session::get('user')['id'];
+
+        $selectClouse = $this->getClause();
+        $query = "SELECT {$selectClouse}
+                FROM applications a 
+                JOIN listings l ON a.listings_id = l.id 
+                JOIN users seeker ON l.user_id = seeker.id
+                JOIN jobseeker j ON a.job_seeker_id = j.id
+                WHERE l.user_id = :user_id AND a.status = :status";
 
         $params = [
-            'listings_id' => $listingId
+            'user_id' => $userId,
+            'status' => $status
         ];
 
-        $applications = $this->db->query($query, $params)->fetchAll();
+        return $this->db->query($query, $params)->fetchAll();
+    }
 
-        foreach($applications as $application) {
-            $application->listing = $this->getListing($listingId);
-            $application->jobSeeker = $this->getJobseeker($application->job_seeker_id);
-            $application->user = $this->getUser($application->job_seeker_id);
+    /**
+     * get clause 
+     *
+     * @return string
+     */
+    public function getClause() {
+
+        $tableAlias = [
+            'a' => 'applications',
+            'l' => 'listings',
+            'seeker' => 'users',
+            'j' => 'jobseeker'
+        ];
+        foreach($tableAlias as $alias => $table) {
+            $columns = $this->getTableColumns($table);
+
+            foreach($columns as $column) {
+                $select[] = "$alias.$column AS {$alias}_$column";
+            }
         }
-        // $application->jobSeeker = $this->db->query($query, $params)->fetch();
-        // $application->user = $this->db->query($query, $params)->fetch();
-        // get job seeker data associated with this application 
-        // $job_seeker_id = $application->job_seeker_id;
 
-        // $params = [
-        //     'id' => $job_seeker_id
-        // ];
+        $selectClouse = implode(", ", $select);
 
-        // $query = "SELECT * FROM jobseeker WHERE id = :id";
-        // $application->jobSeeker = $this->db->query($query, $params)->fetch();
+        return $selectClouse;
+    }
+    /**
+     * Get the listings associated with this application
+     * 
+     * @return object|null
+     */
+    public function getApplications() {
+        $userId = Session::get('user')['id'];
+        $selectClouse = $this->getClause();
+        $query = "SELECT {$selectClouse} 
+                FROM applications a 
+                JOIN listings l ON a.listings_id = l.id 
+                JOIN users seeker ON a.job_seeker_id = seeker.id
+                JOIN jobseeker j ON a.job_seeker_id = j.id
+                WHERE l.user_id = :user_id";
 
-        // $query = "SELECT * FROM users WHERE id = :id";
-        // $application->user = $this->db->query($query, $params)->fetch();
+        $params = [
+            'user_id' => $userId,
+        ];
 
-        // $application->listing = $this->getListing($listingId);
-
-        return $applications;
+        // return $query;
+        return $this->db->query($query, $params)->fetchAll();
     }
 
     /**
@@ -112,6 +145,24 @@ class Application extends Model {
             'id' => $listingId
         ];
         
+        $listing = $this->db->query($query, $params)->fetch();
+
+        return $listing;
+    }
+
+    /**
+     * Get the job type associated with this listing 
+     * 
+     * @param int $jobTypeId
+     * @return object|null
+     */
+    public function jobType($jobTypeId) {
+        $query = "SELECT * FROM job_types WHERE id = :id";
+
+        $params = [
+            'id' => $jobTypeId
+        ];
+
         return $this->db->query($query, $params)->fetch();
     }
 }

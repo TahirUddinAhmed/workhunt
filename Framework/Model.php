@@ -3,7 +3,7 @@
 namespace Framework;
 
 use Framework\Database;
-
+use PDO;
 class Model {
     protected $db;
     protected $table;
@@ -47,6 +47,15 @@ class Model {
         return $this->db->query("SELECT * FROM {$this->table} WHERE id = :id", $params)->fetch();
     }
 
+    /**
+     * Get table Columns
+     *
+     * @param string $table
+     * @return object
+     */
+    public function getTableColumns($table) {
+        return $this->db->query("SHOW COLUMNS FROM {$table}")->fetchAll(PDO::FETCH_COLUMN);
+    }
     /**
      * Count number of records in a table
      *
