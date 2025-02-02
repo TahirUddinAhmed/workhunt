@@ -10,6 +10,7 @@ $router->get('/listings/apply/{id}', 'ListingController@apply', ['auth']);
 $router->get('/users/jobseeker/dashboard', 'JobSeekerController@dashboard', ['auth']);
 $router->get('/users/jobseeker/dashboard/download-resume', 'JobSeekerController@downloadResume', ['auth']);
 $router->get('/users/employer/dashboard', 'EmployerController@index', ['auth']);
+$router->get('users/employer/dashboard/applications', 'EmployerController@applications', ['auth']);
 // Form Submission
 $router->post('/listings', 'ListingController@store');
 $router->put('/listings/{id}', 'ListingController@update', ['auth']);

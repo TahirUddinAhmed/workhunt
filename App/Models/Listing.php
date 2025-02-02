@@ -9,6 +9,21 @@ class Listing extends Model{
     protected $table = "listings";
 
     /**
+     * get application associated with a listing
+     *
+     * @param obj $listings
+     * @return object|null
+     */
+    public function getApplications($listingId) {
+        $query = "SELECT * FROM applications WHERE listings_id = :listings_id";
+
+        $params = [
+            'listings_id' => $listingId
+        ];
+
+        return $this->db->query($query, $params)->fetchAll();
+    }
+    /**
      * Get the job type associated with this listing 
      * 
      * @param int $jobTypeId

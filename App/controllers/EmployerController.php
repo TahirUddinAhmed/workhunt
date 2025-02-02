@@ -2,7 +2,9 @@
 
 namespace App\Controllers;
 
+use App\Models\Application;
 use App\Models\Employer;
+use App\Models\Listing;
 use Framework\Authorization;
 use Framework\Session;
 use Framework\Validation;
@@ -11,11 +13,15 @@ use App\Models\User;
 class EmployerController {
     private $user;
     private $employer;
+    private $application;
+    private $listings;
 
     public function __construct()
     {
         $this->user = new User();
         $this->employer = new Employer();
+        $this->application = new Application();
+        $this->listings = new Listing();
 
         if(!Authorization::isEmployer()) {
             Session::setFlashMessage('error_message', 'You are not authorized to access this resource');
@@ -32,7 +38,7 @@ class EmployerController {
     public function EmployerData($user) {
         $user->listings_count = $this->employer->countJobs(Session::get('user')['id']);
 
-        $user->application_count = $this->employer->countApplication();
+        $user->application_count = $this->application->countApplication(Session::get('user')['id']);
 
         return $user;
     }
@@ -53,6 +59,39 @@ class EmployerController {
             'user' => $user,
             'employer' => $employer
         ]);
+    }
+
+    /**
+     * Application Page load
+     * 
+     * @return void
+     */
+    public function applications() {
+        $user = $this->employer->getUser();
+        $employer = $this->user->getEmployer();
+
+        $listings = $this->employer->getListings();
+
+        
+
+        $applicationData = [];
+
+        foreach($listings as $listing) {
+            $applicationData[] = $this->application->getApplication($listing->id);
+        }
+        // get Listings 
+        // foreach($applicationData as $data) {
+        //     foreach($data as $value) {
+                
+        //     }
+        // }
+
+        // inspect($applicationData);
+       loadView('/users/employer/application', [
+            'user' => $user,
+            'employer' => $employer,
+            'applications' => $applicationData
+       ]);
     }
 
     /**

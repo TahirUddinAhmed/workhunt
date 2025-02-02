@@ -132,7 +132,11 @@ function get_time_ago($datetime_str) {
         return "$weeks week$s ago";
     } else {
         $s = $total_days != 1 ? 's' : '';
-        return "$total_days day$s ago";
+        if($total_days >= 0) {
+            return "$total_days day$s ago";
+        } else {
+            return "0 day$s ago";
+        }
     }
 }
 

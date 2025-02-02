@@ -50,7 +50,7 @@ class Employer extends Model {
 
         $query = "SELECT * FROM listings WHERE user_id = :user_id";
 
-        return $this->db->query($query, $params)->fetch();
+        return $this->db->query($query, $params)->fetchAll();
     }
 
     /**
@@ -77,10 +77,12 @@ class Employer extends Model {
     public function countApplication()
     {
         $myListings = $this->getListings();
+
+        inspect($myListings);
         $countListings = $this->countJobs(Session::get('user')['id']);
 
 
-        // inspect($countListings);
+        // // inspect($countListings);
         if($countListings > 0) {
             // extract the listing id 
             // $listing_id = $myListings->id;
