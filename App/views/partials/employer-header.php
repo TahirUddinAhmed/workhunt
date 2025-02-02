@@ -10,7 +10,7 @@
         <a href="/" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl transition-all flex items-center shadow-md hover:shadow-lg">
             <i class="fas fa-house-user mr-2"></i> Home
         </a>
-        <a href="dashboard/applications" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-xl transition-all flex items-center shadow-md hover:shadow-lg">
+        <a href="/users/employer/dashboard/applications" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-xl transition-all flex items-center shadow-md hover:shadow-lg">
             <i class="fas fa-file-alt mr-2"></i> Applications
         </a>
         <a href="my-listings.html" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-xl transition-all flex items-center shadow-md hover:shadow-lg">

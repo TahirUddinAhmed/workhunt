@@ -10,27 +10,30 @@
          <p class="text-gray-600">Manage and review applications submitted for your job listings.</p>
      </div>
 
+     <?php loadPartial('message') ?>
      <!-- Filters & Search -->
      <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+         <form action="">
          <div class="flex flex-wrap gap-4">
-             <select class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                 <option>All Status</option>
-                 <option>Pending</option>
-                 <option>Reviewed</option>
-                 <option>Rejected</option>
+             <select name="status" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                 <option value="">All Status</option>
+                 <option value="pending">Pending</option>
+                 <option value="accepted">Acceoted</option>
+                 <option value="rejected">Rejected</option>
              </select>
-             <select class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+             <!-- <select class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                  <option>All Jobs</option>
                  <option>Software Engineer</option>
                  <option>Product Manager</option>
                  <option>Designer</option>
-             </select>
+             </select> -->
 
              <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-xl transition-all flex items-center shadow-md hover:shadow-lg">
              <i class="fas fa-filter mr-2"></i>   
                 Filter
             </button>
-         </div>
+        </div>
+    </form>
          <!-- <div>
              <input type="text" placeholder="Search applications..." class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
          </div> -->
@@ -68,17 +71,37 @@
                         </a>
                      </td>
                      <td class="px-6 py-4 whitespace-nowrap">
-                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                        <?php if($application->status == 'accepted') : ?>
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                              <?= $application->status ?>
-                         </span>
+                            </span>
+                        <?php elseif($application->status == 'rejected') : ?>
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                             <?= $application->status ?>
+                            </span>
+                        <?php else : ?>
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                <?= $application->status ?>
+                            </span>
+                        <?php endif; ?>
                      </td>
-                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                         <a href="#" class="text-white hover:text-gray-700 bg-blue-500 text-xs leading-5 font-semibold rounded-full py-2 px-4 mr-2">
-                            Accepted
-                         </a>
-                         <a href="#" class="text-white hover:text-gray-700 bg-red-500 text-xs leading-5 font-semibold rounded-full py-2 px-4">
-                            Rejected
-                         </a>
+                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium w-24">
+                        <div class="flex justify-end">
+                            <form action="/users/employer/dashboard/applications/<?= $application->id ?>" method="POST"> 
+                                <input type="hidden" name="_method" value="PUT">
+                                <input type="hidden" name="status" value="accepted">
+                                <button type="submit" class="text-white hover:text-gray-300 bg-blue-500 text-xs leading-5 font-semibold rounded-full py-2 px-4 mr-2">
+                                    Accepted
+                                </button>
+                            </form>
+                            <form action="/users/employer/dashboard/applications/<?= $application->id ?>" method="POST">
+                                <input type="hidden" name="_method" value="PUT">
+                                <input type="hidden" name="status" value="rejected">
+                                <button type="submit" class="text-white hover:text-gray-300 bg-red-500 text-xs leading-5 font-semibold rounded-full py-2 px-4">
+                                    Rejected
+                                </button>
+                            </form>
+                         </div>
                      </td>
                  </tr>
                  <?php endforeach; ?>

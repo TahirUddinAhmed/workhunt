@@ -325,7 +325,7 @@ class ListingController {
             // inspectAndDie($UpdateValues);
 
             // $_SESSION['success_message'] = 'Listing Updated Successfully';
-            Session::getFlashMessage('success_message', 'Listing updated successfully');
+            Session::setFlashMessage('success_message', 'Listing updated successfully');
 
             redirect('/listings');
         }

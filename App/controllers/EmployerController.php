@@ -72,19 +72,11 @@ class EmployerController {
 
         $listings = $this->employer->getListings();
 
-        
-
         $applicationData = [];
 
         foreach($listings as $listing) {
             $applicationData[] = $this->application->getApplication($listing->id);
         }
-        // get Listings 
-        // foreach($applicationData as $data) {
-        //     foreach($data as $value) {
-                
-        //     }
-        // }
 
         // inspect($applicationData);
        loadView('/users/employer/application', [
@@ -244,6 +236,75 @@ class EmployerController {
 
                 return $logo;
             }
+
+    }
+
+
+    /**
+     * Update Status
+     * 
+     * @param array $params
+     * @return void
+     */
+    public function updateStatus($params) {
+
+        $application_id = $params['id'];
+
+        $application = $this->application->find($application_id);
+
+        if(!$application) {
+            ErrorController::notFound('resourse not found');
+            return;
+        }
+
+        $user = $this->employer->getUser();
+        $employer = $this->user->getEmployer();
+
+        $listings = $this->employer->getListings();
+
+        $applicationData = [];
+
+        foreach($listings as $listing) {
+            $applicationData[] = $this->application->getApplication($listing->id);
+        }
+
+
+        $allowedFields = ['status'];
+
+        $updateValues = array_intersect_key($_POST, array_flip($allowedFields));
+
+
+        // sanitize
+        $updateValues = array_map('sanitize', $updateValues);
+
+        // validate 
+        $errors = [];
+        if(empty($updateValues['status'])) {
+            $errors['empty'] = "Can't update, try again";
+        }
+
+        // validate values 
+        $requiredValues = ['accepted', 'rejected', 'pending'];
+
+        if(!in_array($updateValues['status'], $requiredValues)) {
+            $errors['reject'] = "Don't try to change value, try again";
+        }
+
+        if(!empty($errors)) {
+            loadView('/users/employer/application', [
+                'errors' => $errors,
+                'user' => $user,
+                'employer' => $employer,
+                'applications' => $applicationData
+           ]);
+           exit;
+        } 
+
+        $this->application->update($application->id, $updateValues);
+
+        Session::setFlashMessage('success_message', 'Application status updated successfully');
+
+        redirect('/users/employer/dashboard/applications');
 
     }
 }
