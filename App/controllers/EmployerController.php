@@ -264,25 +264,16 @@ class EmployerController {
      * @return void
      */
     public function updateStatus($params) {
-        // inspectAndDie($params);
         $application_id = $params['id'];
-
-        // inspectAndDie($application_id);
         $application = $this->application->find($application_id);
 
-        // inspectAndDie($application);
         if(!$application) {
             ErrorController::notFound('resourse not found');
             return;
         }
 
-        
-
         $allowedFields = ['status'];
-
         $updateValues = array_intersect_key($_POST, array_flip($allowedFields));
-
-
         // sanitize
         $updateValues = array_map('sanitize', $updateValues);
 
@@ -291,17 +282,13 @@ class EmployerController {
         if(empty($updateValues['status'])) {
             $errors['empty'] = "Can't update, try again";
         }
-
         // validate values 
         $requiredValues = ['accepted', 'rejected', 'pending'];
 
         if(!in_array($updateValues['status'], $requiredValues)) {
-            $errors['reject'] = "Don't try to change value, try again";
+            $errors['reject'] = "Don't try to the change value, try again";
         }
-        inspectAndDie($updateValues);
         $user = $this->employer->getUser();
-        $employer = $this->user->getEmployer();
-
         $applicationsData = $this->application->getApplications();
 
 
@@ -309,13 +296,12 @@ class EmployerController {
             loadView('/users/employer/application', [
                 'errors' => $errors,
                 'user' => $user,
-                'employer' => $employer,
                 'applications' => $applicationsData
            ]);
            exit;
         } 
 
-        $this->application->update($application->application_id, $updateValues);
+        $this->application->update($application->id, $updateValues);
 
         Session::setFlashMessage('success_message', 'Application status updated successfully');
 
