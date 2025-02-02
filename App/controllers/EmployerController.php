@@ -38,7 +38,7 @@ class EmployerController {
     public function EmployerData($user) {
         $user->listings_count = $this->employer->countJobs(Session::get('user')['id']);
 
-        $user->application_count = $this->application->countApplication(Session::get('user')['id']);
+        $user->application_count = $this->application->countApplications();
 
         return $user;
     }

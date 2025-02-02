@@ -66,45 +66,6 @@ class Employer extends Model {
         ];
         return $this->getCount($params, 'listings');
 
-        // return $this->db->query("SELECT COUNT(*) FROM listings WHERE user_id = :user_id", $params)->fetchColumn();
-    }
-    /**
-     * get number of records from the database 
-     * 
-     * @param int $id 
-     * @return object|bool
-     */
-    public function countApplication()
-    {
-        $myListings = $this->getListings();
-
-        inspect($myListings);
-        $countListings = $this->countJobs(Session::get('user')['id']);
-
-
-        // // inspect($countListings);
-        if($countListings > 0) {
-            // extract the listing id 
-            // $listing_id = $myListings->id;
-
-            $params = [
-                'listings_id' => $myListings->id
-            ];
-
-            $count_application = $this->getCount($params, 'applications');
-
-            return $count_application;
-        }
-        
-        // $count = [];
-        // foreach($myListings as $listing => $value) {
-        //     // $listing_id = $listing->id;
-        //     // $coun
-        //     // inspect($listing);  
-        //     inspect($listing);
-        // }
-
-
-        // return $this->db->query("SELECT COUNT(*) FROM listings WHERE user_id = :user_id", $params)->fetchColumn();
+       
     }
 }

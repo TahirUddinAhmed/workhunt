@@ -3,10 +3,32 @@
 namespace App\Models;
 
 use Framework\Model;
+use Framework\Session;
 
 class Application extends Model {
     protected $table = "applications";
 
+
+    /**
+     * Count Application for employer 
+     * 
+     * @return void
+     */
+    public function countApplications() {
+        $userId = Session::get('user')['id'];
+
+        $query = "SELECT COUNT(*) AS total_applications
+                FROM applications a
+                JOIN listings l ON a.listings_id = l.id
+                WHERE l.user_id = :user_id;
+                ";
+        
+        $params = [
+            'user_id' => $userId
+        ];
+
+        return $this->db->query($query, $params)->fetchColumn();
+    }
 
     /**
      * Get the listings associated with this application
