@@ -10,6 +10,30 @@ class Application extends Model {
 
 
     /**
+     * Count application by listingsid
+     * 
+     * @param int $listingId
+     * @return void
+     */
+    public function countAppWithListingId($listingId) {
+        $userId = Session::get('user')['id'];
+
+
+        $query = "SELECT COUNT(*) AS total_applications
+                FROM applications a
+                JOIN listings l ON a.listings_id = l.id
+                WHERE l.user_id = :user_id AND a.listings_id = :listings_id;
+                ";
+        
+        $params = [
+            'user_id' => $userId,
+            'listings_id' => $listingId
+        ];
+
+        return $this->db->query($query, $params)->fetchColumn();
+    }
+
+    /**
      * Count Application for employer 
      * 
      * @return void

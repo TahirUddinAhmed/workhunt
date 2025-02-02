@@ -13,6 +13,7 @@ $router->get('/users/employer/dashboard', 'EmployerController@index', ['auth']);
 $router->get('/users/employer/dashboard/applications', 'EmployerController@applications', ['auth']);
 $router->get('/users/employer/dashboard/applications/filter',  'EmployerController@filter', ['auth']);
 $router->get('/users/employer/dashboard/applications/download-resume/{id}', 'EmployerController@downloadResume', ['auth']);
+$router->get('/users/employer/dashboard/my-listings', 'EmployerController@myListings', ['auth']);
 
 // Form Submission
 $router->post('/listings', 'ListingController@store');

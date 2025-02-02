@@ -343,4 +343,26 @@ class EmployerController {
 
         exit;
     }
+    /**
+     * My Listings page 
+     * 
+     * @return void
+     */
+    public function myListings() {
+        $user = $this->employer->getUser();
+        $listings = $this->employer->getListings();
+
+        $listing_count = 0;
+        foreach($listings as $listing) {
+            $listing->job_type = $this->listings->jobType($listing->job_type_id);
+            $listing->application_count = $this->application->countAppWithListingId($listing->id);
+            $listing_count += $this->listings->withCount($listing->id);
+        }
+
+        loadView('/users/employer/my-listings', [
+            'user' => $user,
+            'listing_count' => $listing_count,
+            'listings' => $listings
+        ]);
+    }
 }
