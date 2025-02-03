@@ -35,7 +35,7 @@
                         </div>
                         <div>
                             <h3 class="text-gray-500 text-sm mb-1">Interviews</h3>
-                            <p class="text-3xl font-bold text-gray-800">0</p>
+                            <p class="text-3xl font-bold text-gray-800"><?= $user->interview_count ?? '0' ?></p>
                         </div>
                     </div>
                 </div>

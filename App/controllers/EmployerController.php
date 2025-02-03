@@ -40,6 +40,8 @@ class EmployerController {
 
         $user->application_count = $this->application->countApplications();
 
+        $user->interview_count = $this->application->countInterview();
+
         return $user;
     }
 
@@ -137,7 +139,7 @@ class EmployerController {
             // check if user entered email if exists in the database
             $checkEmail = $this->user->findByEmail($email);
             if($checkEmail) {
-                $errors['email-found'] = "Can't update, {$email} is already exits";
+                $errors['email-found'] = "Can't update, {$email} is already exists";
             }
         }
 

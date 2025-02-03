@@ -55,6 +55,25 @@ class Application extends Model {
     }
 
     /**
+     * Get count
+     */
+    public function countInterview() {
+        $userId = Session::get('user')['id'];
+
+        $query = "SELECT COUNT(*) AS total_applications
+                  FROM applications a
+                  JOIN listings l ON a.listings_id = l.id
+                  WHERE l.user_id = :user_id AND a.status = :status";
+        
+        $params = [
+            'user_id' => $userId,
+            'status' => 'accepted'
+        ];
+
+        return $this->db->query($query, $params)->fetchColumn();
+    }
+
+    /**
      * Filter by field
      *
      * @param string $status
