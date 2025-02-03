@@ -763,6 +763,22 @@ video {
   margin-top: 2rem;
 }
 
+.mb-12 {
+  margin-bottom: 3rem;
+}
+
+.mb-5 {
+  margin-bottom: 1.25rem;
+}
+
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
+.mt-12 {
+  margin-top: 3rem;
+}
+
 .block {
   display: block;
 }
@@ -819,6 +835,14 @@ video {
   height: 100%;
 }
 
+.h-12 {
+  height: 3rem;
+}
+
+.h-5 {
+  height: 1.25rem;
+}
+
 .w-10 {
   width: 2.5rem;
 }
@@ -855,6 +879,14 @@ video {
   width: 100%;
 }
 
+.w-12 {
+  width: 3rem;
+}
+
+.w-5 {
+  width: 1.25rem;
+}
+
 .min-w-full {
   min-width: 100%;
 }
@@ -869,6 +901,10 @@ video {
 
 .flex-1 {
   flex: 1 1 0%;
+}
+
+.flex-shrink-0 {
+  flex-shrink: 0;
 }
 
 .cursor-pointer {
@@ -1120,6 +1156,15 @@ video {
   border-color: rgb(248 113 113 / var(--tw-border-opacity));
 }
 
+.border-transparent {
+  border-color: transparent;
+}
+
+.bg-black {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+}
+
 .bg-blue-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(219 234 254 / var(--tw-bg-opacity));
@@ -1232,11 +1277,6 @@ video {
 .bg-yellow-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(234 179 8 / var(--tw-bg-opacity));
-}
-
-.bg-black {
-  --tw-bg-opacity: 1;
-  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
 }
 
 .bg-gradient-to-br {
@@ -1384,6 +1424,11 @@ video {
   padding-bottom: 2rem;
 }
 
+.py-16 {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
 .pb-4 {
   padding-bottom: 1rem;
 }
@@ -1486,6 +1531,10 @@ video {
 
 .leading-5 {
   line-height: 1.25rem;
+}
+
+.leading-relaxed {
+  line-height: 1.625;
 }
 
 .tracking-wider {
@@ -1621,6 +1670,11 @@ video {
   color: rgb(133 77 14 / var(--tw-text-opacity));
 }
 
+.text-indigo-600 {
+  --tw-text-opacity: 1;
+  color: rgb(79 70 229 / var(--tw-text-opacity));
+}
+
 .underline {
   text-decoration-line: underline;
 }
@@ -1692,8 +1746,22 @@ video {
   transition-duration: 150ms;
 }
 
+.transition-shadow {
+  transition-property: box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
 .duration-300 {
   transition-duration: 300ms;
+}
+
+.duration-200 {
+  transition-duration: 200ms;
+}
+
+.ease-in-out {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .overlay {
@@ -1837,6 +1905,11 @@ video {
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.hover\:text-indigo-800:hover {
+  --tw-text-opacity: 1;
+  color: rgb(55 48 163 / var(--tw-text-opacity));
 }
 
 .hover\:underline:hover {
