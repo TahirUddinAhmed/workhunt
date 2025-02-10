@@ -20,9 +20,11 @@
                         <h3 class="text-xl font-bold text-gray-800"><?= $listing->title ?></h3>
                         <span class="text-sm text-gray-500"><?= 'Posted ' . get_time_ago($listing->created_at) ?></span>
                     </div>
-                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm mt-2">
-                        <?= $listing->job_type->type_name ?>
-                    </span>
+                    <?php if(!empty($listing->job_type->type_name)) : ?>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm mt-2">
+                            <?= $listing->job_type->type_name ?? '' ?>
+                        </span>
+                    <?php endif; ?>
                 </div>
 
                 <div class="space-y-3 mb-6">

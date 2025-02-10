@@ -86,7 +86,7 @@ class Application extends Model {
         $query = "SELECT {$selectClouse}
                 FROM applications a 
                 JOIN listings l ON a.listings_id = l.id 
-                JOIN users seeker ON l.user_id = seeker.id
+                JOIN users seeker ON a.job_seeker_id = seeker.id
                 JOIN jobseeker j ON a.job_seeker_id = j.id
                 WHERE l.user_id = :user_id AND a.status = :status";
 

@@ -91,6 +91,7 @@ class EmployerController {
      */
     public function filter() {
         $user = $this->employer->getUser();
+        $employer = $this->user->getEmployer();
         $filter = isset($_GET['status']) ? trim($_GET['status']) : '';
 
         if(!empty($filter)) {
@@ -99,8 +100,10 @@ class EmployerController {
             $applications = $this->application->getApplications();
         }
 
+        // inspect($applications);
         loadView('/users/employer/application', [ 
             'user' => $user,
+            'employer' => $employer,
             'applications' => $applications
        ]);
     }

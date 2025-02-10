@@ -459,7 +459,7 @@ class ListingController {
 
 
        // message 
-       Session::set('success_message', 'Congrats, You have applies for a job');
+       Session::setFlashMessage('success_message', 'Congrats, You have applies for a job');
 
        redirect('/listings');
     }
