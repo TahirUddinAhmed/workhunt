@@ -11,12 +11,14 @@ use Framework\Authorization;
 use App\Models\Listing;
 use App\Models\User;
 use App\Models\Application;
+use App\Models\Employer;
 
 class ListingController {
     protected $listings;
     protected $jobTypes;
     private $jobSeeker;
     private $user;
+    private $employer;
     private $application;
 
     public function __construct()
@@ -25,6 +27,7 @@ class ListingController {
         $this->jobTypes = new JobTypes();
         $this->jobSeeker = new JobSeeker();
         $this->user = new User();
+        $this->employer = new Employer();
         $this->application = new Application();
     }
 
@@ -75,14 +78,20 @@ class ListingController {
         $id = $params['id'] ?? '';
 
         $listing = $this->listings->find($id);
+        $listing->job_type = $this->listings->jobType($listing->job_type_id);
+        $listing->application_count = $this->application->countAppWithListingId($listing->id);
+        $company = $this->employer->companyDetails($listing->user_id);
         
+        // inspect($listing);
+
         if(!$listing) {
             ErrorController::notFound('Listing Not Found');
             return;
         }
         
         loadView('listings/show', [
-            'listing' => $listing
+            'listing' => $listing,
+            'company' => $company
         ]);
     }
 

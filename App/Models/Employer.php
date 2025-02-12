@@ -36,6 +36,7 @@ class Employer extends Model {
 
         return $this->db->query($query, $params)->fetch();
     }
+
     /**
      * Get the listings associated with this table id
      * 
@@ -51,6 +52,22 @@ class Employer extends Model {
         $query = "SELECT * FROM listings WHERE user_id = :user_id";
 
         return $this->db->query($query, $params)->fetchAll();
+    }
+
+    /**
+     * Get company details 
+     * 
+     * @param int $id
+     * @return object|bool
+     */
+    public function companyDetails(int $id) {
+        $query = "SELECT * FROM users u
+                  JOIN employer e WHERE u.id = e.id AND u.id = :id";
+        $params = [
+            'id' => $id
+        ];
+
+        return $this->db->query($query, $params)->fetch();
     }
 
     /**

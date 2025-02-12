@@ -16,17 +16,17 @@ class Application extends Model {
      * @return void
      */
     public function countAppWithListingId($listingId) {
-        $userId = Session::get('user')['id'];
+        // $userId = Session::get('user')['id'];
 
 
         $query = "SELECT COUNT(*) AS total_applications
                 FROM applications a
                 JOIN listings l ON a.listings_id = l.id
-                WHERE l.user_id = :user_id AND a.listings_id = :listings_id;
+                WHERE a.listings_id = :listings_id;
                 ";
         
         $params = [
-            'user_id' => $userId,
+            // 'user_id' => $userId,
             'listings_id' => $listingId
         ];
 

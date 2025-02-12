@@ -56,6 +56,7 @@ class Model {
     public function getTableColumns($table) {
         return $this->db->query("SHOW COLUMNS FROM {$table}")->fetchAll(PDO::FETCH_COLUMN);
     }
+
     /**
      * Count number of records in a table
      *
@@ -68,6 +69,7 @@ class Model {
         ];
         return $this->db->query("SELECT COUNT(*) FROM {$this->table} WHERE id = :id", $params)->fetchColumn();
     }
+    
     /**
      * Count number of records in a table
      *

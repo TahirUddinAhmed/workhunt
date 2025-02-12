@@ -23,6 +23,7 @@ class Listing extends Model{
 
         return $this->db->query($query, $params)->fetchAll();
     }
+    
     /**
      * Get the job type associated with this listing 
      * 
