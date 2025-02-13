@@ -1,3 +1,9 @@
+// Navbar 
+document.querySelector("#hamburger").addEventListener('click', function() {
+  const menu = document.getElementById('mobile-menu');
+  menu.classList.toggle('hidden');
+});
+
 document.addEventListener("DOMContentLoaded", function() {
   // Function to handle file upload validation
   function handleFileUpload(event, allowedTypes, maxSize, showFileInfoElement) {
