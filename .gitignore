@@ -4,3 +4,4 @@
 .env
 .vscode
 .DS_Store
+/Framework/Mail.php
